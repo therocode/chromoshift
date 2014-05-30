@@ -1,0 +1,13 @@
+*.swp
+*.swo
+*~
+CMakeCache.txt
+CMakeFiles/*
+cmake_install.cmake
+Makefile
+*.a
+bin/*
+lib/*
+doxy/gen/*
+remake.sh
+*HEJ*
