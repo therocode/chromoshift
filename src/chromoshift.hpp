@@ -1,5 +1,6 @@
 #include <fea/structure.hpp>
 #include <fea/messaging.hpp>
+#include <SFML/Window.hpp>
 
 class ChromoShift : public fea::Application
 {
@@ -9,6 +10,7 @@ class ChromoShift : public fea::Application
         virtual void loop() override;
     private:
         fea::MessageBus bus;
+        sf::Window window;
 
         fea::GameStateMachine stateMachine;
 };
