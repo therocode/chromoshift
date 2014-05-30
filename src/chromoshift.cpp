@@ -8,7 +8,7 @@ ChromoShift::ChromoShift() :
 
 void ChromoShift::setup(const std::vector<std::string>& args)
 {
-    window.create(sf::VideoMode(800, 600), "The Operation");
+    window.create(sf::VideoMode(800, 600), "ChromoShift");
     window.setFramerateLimit(60);
 
     stateMachine.addGameState("ingame", std::unique_ptr<InGameState>(new InGameState(bus)));
