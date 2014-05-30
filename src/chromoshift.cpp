@@ -1,6 +1,11 @@
 #include "chromoshift.hpp"
 #include "ingame.hpp"
 
+ChromoShift::ChromoShift() :
+    inputHandler(bus, window)
+{
+}
+
 void ChromoShift::setup(const std::vector<std::string>& args)
 {
     window.create(sf::VideoMode(800, 600), "The Operation");
@@ -17,6 +22,7 @@ void ChromoShift::destroy()
 
 void ChromoShift::loop()
 {
+    inputHandler.process();
     stateMachine.run();
     window.display();
 
