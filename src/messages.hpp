@@ -10,3 +10,5 @@ namespace sf
 FEA_DECLARE_MESSAGE(QuitMessage);
 FEA_DECLARE_MESSAGE(MoveMessage, Direction);
 FEA_DECLARE_MESSAGE(BGMessage, const sf::Image&);
+
+//<3

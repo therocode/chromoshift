@@ -29,8 +29,9 @@ void Scene::processWallMaskImage(const sf::Image& wallMaskImage)
     for(uint32_t i = 0; i < imageSize; i++)
     {
         sf::Color colour = imageArray[i];
-        // grab first and second and treat specially
-        if(colour == sf::Color::Black)
+        // first two must always be true as these are the player colour pixels
+        if(i == 0 || i == 1 ||
+            colour == sf::Color::Black)
         {
             tempMask.at(i) = true;
         }
