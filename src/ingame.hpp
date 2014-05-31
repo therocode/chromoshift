@@ -17,6 +17,7 @@ class InGameState :
     private:
         fea::MessageBus& mBus;
         Scene mScene;
+        Renderer mRenderer;
 
         std::string mNextState;
 };
