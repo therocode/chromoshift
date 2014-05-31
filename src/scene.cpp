@@ -3,7 +3,6 @@
 Scene::Scene(fea::MessageBus& bus)
   : mBus(bus)
 {
-    // stub
     //processWallMaskImage(bildibild);
 }
 
