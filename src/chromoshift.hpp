@@ -1,6 +1,6 @@
 #include <fea/structure.hpp>
 #include <fea/messaging.hpp>
-#include <SFML/Window.hpp>
+#include <SFML/Graphics.hpp>
 #include "inputhandler.hpp"
 
 class ChromoShift : public fea::Application
@@ -13,7 +13,7 @@ class ChromoShift : public fea::Application
         virtual void loop() override;
     private:
         fea::MessageBus mBus;
-        sf::Window mWindow;
+        sf::RenderWindow mWindow;
         InputHandler mInputHandler;
 
         fea::GameStateMachine mStateMachine;
