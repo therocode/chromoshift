@@ -14,6 +14,7 @@ class Scene
 
     private:
         fea::MessageBus& mBus;
+        fea::EntityManager manager;
         fea::EntityPtr mPlayer; // position and colour value
         std::vector<fea::EntityPtr> mColourBlocks; // each have a position and colour value and add/sub
         WallMask mWallMask;
