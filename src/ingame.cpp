@@ -3,7 +3,7 @@
 InGameState::InGameState(fea::MessageBus& bus, sf::RenderWindow& w) : 
     mBus(bus),
     mScene(bus),
-    mRenderer(w)
+    mRenderer(bus, w)
 {
     mBus.addSubscriber<QuitMessage>(*this);
 }
