@@ -70,11 +70,21 @@ klasses:
         player colour change message whatever (RGB Message)
         goal colour - needs to know at start
 
+    wallmask:
+        black: wall
+        transparent: ground
+        white: player
+        first pixel: starting colour ]-- these two will always be wall
+        second pixel: goal colour    ]-/
+        all other colours: colour entities
+            75% opacity: subtractive
+            100% opacity: additive
+
 PLANNING:
 
 Day One:
 K:
-    Stub for the scene class
+X   Stub for the scene class
     Collision checker class (properly)
     Loading T's image to create arrays and stuff and unstub the scene
 T:
