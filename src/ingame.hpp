@@ -3,6 +3,7 @@
 #include "messages.hpp"
 #include "scene.hpp"
 #include "renderer.hpp"
+#include "levelloader.hpp"
 #include <SFML/Graphics.hpp>
 
 class InGameState : 
@@ -20,6 +21,7 @@ class InGameState :
         fea::MessageBus& mBus;
         Scene mScene;
         Renderer mRenderer;
+        LevelLoader mLevelLoader;
 
         std::string mNextState;
 };

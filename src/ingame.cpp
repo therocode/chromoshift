@@ -3,7 +3,8 @@
 InGameState::InGameState(fea::MessageBus& bus, sf::RenderWindow& w) : 
     mBus(bus),
     mScene(bus),
-    mRenderer(bus, w)
+    mRenderer(bus, w),
+    mLevelLoader(bus)
 {
     mBus.addSubscriber<QuitMessage>(*this);
 }
@@ -15,6 +16,7 @@ InGameState::~InGameState()
 
 void InGameState::setup()
 {
+    mLevelLoader.load("pack1/test");
 }
 
 void InGameState::activate(const std::string& previous)
