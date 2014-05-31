@@ -17,6 +17,9 @@ InGameState::~InGameState()
 void InGameState::setup()
 {
     mLevelLoader.load("levels/pack1/test");
+
+    //mBus.send(PlayerPositionMessage(4, 6));
+    //mBus.send(PlayerColorMessage(sf::Color(255, 255, 0)));
 }
 
 void InGameState::activate(const std::string& previous)
