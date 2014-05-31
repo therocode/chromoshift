@@ -1,0 +1,202 @@
+ACTUAL GAME:
+
+"ChromoShift"
+    become some colour by picking up other colours through add/sub
+
+resolution:
+    800 x 600
+tile resolution:
+    40 x 30 ( = 20x20 pixel tiles)
+
+level size:
+    varying
+    loaded from an image
+
+core elements:
+    player
+    adding colour [+]
+    subtracting colour [-]
+    walls
+    ground
+    gates
+    RGB-meter (0 - 15)
+
+extra elements:
+    hazards
+    bonuses
+    game menu
+    death screen
+
+core elements: TECHNICAL
+    input
+        X grabbing input [T]
+        - player controls [T]
+       (- menu stuff)
+    boring stuff
+        X game state stuff [T]
+        - renderer base [T!]
+    collisions
+        - player vs wall [K]
+        - player vs colours [K]
+    rendering
+        - player: animation upon death, picking up, winning [K]
+        - scene [T]
+        - camera movement [T]
+        - colours: animated, disappearing
+        - interface: animation upon picking up
+        - win/lose screen, new level screen
+    scene
+        - draw images [T]
+        - image loading [K]
+            - scan to create wall mask
+            - scan to create colour entities
+        - player position and colour value
+        - colour positions and values
+       (- extra elements)
+   (sound)
+
+klasses:
+    scene:
+        wall mask:
+            boolean array
+            scene.isWallAt(23, 50);
+        colour entity array:
+            fea::Entity array (colour, add/sub)
+            scene.isColourEntityAt(49, 92309230923);
+        player entity:
+            fea::Entity (colour, position)
+
+    interface:
+        player colour change message whatever (RGB Message)
+        goal colour - needs to know at start
+
+    wallmask:
+        black: wall
+        transparent: ground
+        white: player
+        first pixel: starting colour ]-- these two will always be wall
+        second pixel: goal colour    ]-/
+        all other colours: colour entities
+            75% opacity: subtractive
+            100% opacity: additive
+
+PLANNING:
+
+Day One:
+K:
+X   Stub for the scene class
+    Collision checker class (properly)
+    Loading T's image to create arrays and stuff and unstub the scene
+T:
+X   Main/game application/state machine
+    Draw images
+    Input/player controls
+
+Day Two:
+
+Day Three:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+PUZZLE GAME JAM
+
+levels
+
+pieces - gather X amount of pieces
+ |
+placing pieces in the right positions
+
+problems
+ |
+finding solutions
+ |
+mental challenge
+
+resources:
+    - usually given X which you have to utilise to solve the problems
+
+goals:
+     - can be whatever you want
+     - to get somewhere
+     - collect pieces
+     - often results in "order"
+
+ideas:
+    evacuation game:
+        - building with exits
+        - flock of people within the building
+        - danger within the building, maybe always a fire that spreads
+        - flock runs away from danger, panic spreads
+        - resources (e.g. emergency signs) to be placed to create a "flow" out of the exits
+
+examples:
+    portal:
+        - "FPS"
+        - physics: ballistics, portals, lazerzz
+        - utilise physical objects
+        - avoid harm/danger
+        - goal is to get somewhere
+
+    supaplex:
+        - platformish tile thing
+        - grid-based
+        - utilise "tile pieces"
+        - avoid dangerous tiles
+        - goal is to collect pieces (and reach a spot)
+
+    jigsaw puzzles:
+        - god mode
+        - figure out which piece is next to another and where they fit based on a picture
+        - goal is to put together the pieces
+
+    minesweeper:
+        - click based, third person
+        - grid-based
+        - logic/deduction
+        - avoid clicking on tiles with mines
+        - as fast as possible
+        - goal is to work out where all mines are
+
+    lemmings:
+        - assign X antal roller to lemmings
+        - goal is to get all the lemmings to the exit
+
+    the incredible machine:
+        - place elements at their right positions mechanically
+        - goal is to solve mechanical problems
+
+    world of goo:
+        - place goo blobs in the right spots "structurally", based on their different properties
+        - build a bridge to a destination
+
+    bejeweled:
+        - gems in 3-in-a-row at least
+        - goal is to get as high of a score as possible
+
+    solitaire:
+        - follow rules for placing cards in specific spots
+        - sort out the pack in the right order

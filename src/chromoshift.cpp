@@ -2,30 +2,30 @@
 #include "ingame.hpp"
 
 ChromoShift::ChromoShift() :
-    inputHandler(bus, window)
+    mInputHandler(mBus, mWindow)
 {
 }
 
 void ChromoShift::setup(const std::vector<std::string>& args)
 {
-    window.create(sf::VideoMode(800, 600), "The Operation");
-    window.setFramerateLimit(60);
+    mWindow.create(sf::VideoMode(800, 600), "ChromoShift");
+    mWindow.setFramerateLimit(60);
 
-    stateMachine.addGameState("ingame", std::unique_ptr<InGameState>(new InGameState(bus)));
-    stateMachine.setCurrentState("ingame");
+    mStateMachine.addGameState("ingame", std::unique_ptr<InGameState>(new InGameState(mBus)));
+    mStateMachine.setCurrentState("ingame");
 }
 
 void ChromoShift::destroy()
 {
-    window.close();
+    mWindow.close();
 }
 
 void ChromoShift::loop()
 {
-    inputHandler.process();
-    stateMachine.run();
-    window.display();
+    mInputHandler.process();
+    mStateMachine.run();
+    mWindow.display();
 
-    if(stateMachine.isFinished())
+    if(mStateMachine.isFinished())
         quit();
 }

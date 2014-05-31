@@ -12,9 +12,9 @@ class ChromoShift : public fea::Application
         virtual void destroy() override; 
         virtual void loop() override;
     private:
-        fea::MessageBus bus;
-        sf::Window window;
-        InputHandler inputHandler;
+        fea::MessageBus mBus;
+        sf::Window mWindow;
+        InputHandler mInputHandler;
 
-        fea::GameStateMachine stateMachine;
+        fea::GameStateMachine mStateMachine;
 };

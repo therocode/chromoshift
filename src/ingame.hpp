@@ -1,20 +1,22 @@
 #pragma once
 #include <fea/structure.hpp>
 #include "messages.hpp"
+#include "scene.hpp"
 
 class InGameState : 
     public fea::GameState,
     public QuitMessageReceiver
 {
     public:
-        InGameState(fea::MessageBus& b);
+        InGameState(fea::MessageBus& bus);
         ~InGameState();
         void setup() override;
         void activate(const std::string& previous) override;
         std::string run() override;
         void handleMessage(const QuitMessage& message);
     private:
-        fea::MessageBus& bus;
+        fea::MessageBus& mBus;
+        Scene mScene;
 
-        std::string nextState;
+        std::string mNextState;
 };
