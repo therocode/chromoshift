@@ -48,6 +48,10 @@ void Renderer::handleMessage(const PlayerPositionMessage& message)
     std::tie(x, y) = message.mData;
 
     mPlayer.setPosition({x * 30.0f, y * 30.0f});
+    
+    sf::View view = mWindow.getView();
+    view.setCenter(x * 30.0f, y * 30.0f);
+    mWindow.setView(view);
 }
 
 void Renderer::handleMessage(const PlayerColorMessage& message)
