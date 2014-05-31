@@ -21,7 +21,7 @@ class Scene
         fea::EntityManager mManager;
         fea::EntityFactory mFactory;
         fea::EntityPtr mPlayer; // position and colour value
-        std::vector<fea::EntityPtr> mColourBlocks; // each have a position and colour value and add/sub
+        std::vector<fea::EntityPtr> mColourPickups; // each have a position and colour value and add/sub
         WallMask mWallMask;
 
         void processWallMaskImage(const sf::Image& wallMaskImage);
