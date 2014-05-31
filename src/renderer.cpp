@@ -18,6 +18,7 @@ void Renderer::handleMessage(const BGMessage& message)
 
     mBgTexture.loadFromImage(image);
     mBackground.setTexture(mBgTexture);
+    mBackground.setScale(40.0f, 40.0f);
 }
 
 void Renderer::render()

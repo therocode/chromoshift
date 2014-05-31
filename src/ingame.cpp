@@ -16,7 +16,7 @@ InGameState::~InGameState()
 
 void InGameState::setup()
 {
-    mLevelLoader.load("pack1/test");
+    mLevelLoader.load("levels/pack1/test");
 }
 
 void InGameState::activate(const std::string& previous)
@@ -25,6 +25,7 @@ void InGameState::activate(const std::string& previous)
 
 std::string InGameState::run()
 {
+    mRenderer.render();
     return mNextState;
 }
 
