@@ -2,10 +2,15 @@
 
 WallMask::WallMask()
 {
-    //stub
+}
+
+WallMask::WallMask(std::vector<bool> mask, uint32_t imageWidth)
+{
+    mWallMask = mask;
+    mImageWidth = imageWidth;
 }
 
 bool WallMask::isWallAt(uint32_t x, uint32_t y)
 {
-    return wallMask.at(y * imageLength + x);
+    return mWallMask.at(y * mImageWidth + x);
 }

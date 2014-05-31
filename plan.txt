@@ -30,7 +30,7 @@ extra elements:
 core elements: TECHNICAL
     input
         X grabbing input [T]
-        - player controls [T]
+        X player controls [T]
        (- menu stuff)
     boring stuff
         X game state stuff [T]
@@ -46,7 +46,7 @@ core elements: TECHNICAL
         - interface: animation upon picking up
         - win/lose screen, new level screen
     scene
-        - draw images [T]
+        / draw images [T]
         - image loading [K]
             - scan to create wall mask
             - scan to create colour entities
@@ -89,8 +89,9 @@ X   Stub for the scene class
     Loading T's image to create arrays and stuff and unstub the scene
 T:
 X   Main/game application/state machine
-    Draw images
-    Input/player controls
+X   Draw images
+X   Input/player controls
+    Renderer stub
 
 Day Two:
 
