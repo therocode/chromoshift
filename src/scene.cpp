@@ -4,6 +4,16 @@ Scene::Scene(fea::MessageBus& bus)
   : mBus(bus)
 {
     //processWallMaskImage(bildibild);
+    mBus.addSubscriber<MaskMessage>(*this);
+}
+
+Scene::~Scene()
+{
+    mBus.removeSubscriber<MaskMessage>(*this);
+}
+
+void Scene::handleMessage(const MaskMessage& mess)
+{
 }
 
 bool Scene::isWallAt(uint32_t x, uint32_t y)
