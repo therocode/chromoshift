@@ -18,13 +18,17 @@ void InputHandler::process()
             if(event.key.code == sf::Keyboard::Q)
                 mBus.send(QuitMessage());
             else if(event.key.code == sf::Keyboard::A)
-                mDirectionsPressed[0] = true;
+                mBus.send(MoveMessage(LEFT));
+                //mDirectionsPressed[0] = true;
             else if(event.key.code == sf::Keyboard::D)
-                mDirectionsPressed[1] = true;
+                mBus.send(MoveMessage(RIGHT));
+                //mDirectionsPressed[1] = true;
             else if(event.key.code == sf::Keyboard::W)
-                mDirectionsPressed[2] = true;
+                mBus.send(MoveMessage(UP));
+                //mDirectionsPressed[2] = true;
             else if(event.key.code == sf::Keyboard::S)
-                mDirectionsPressed[3] = true;
+                mBus.send(MoveMessage(DOWN));
+                //mDirectionsPressed[3] = true;
         }
         else if(event.type == sf::Event::KeyReleased)
         {
