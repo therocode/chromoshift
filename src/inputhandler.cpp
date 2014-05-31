@@ -45,6 +45,10 @@ void InputHandler::process()
         {
             mBus.send(QuitMessage());
         }
+        else if(event.type == sf::Event::Resized)
+        {
+            mBus.send(ResizeMessage(event.size.width, event.size.height));
+        }
     }
 
     //mBus.send(CameraDirectionMessage({(mDirectionsPressed[0] ? -10.0f : 0.0f) + (mDirectionsPressed[1] ? 10.0f : 0.0f),
