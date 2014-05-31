@@ -3,7 +3,6 @@
 Scene::Scene(fea::MessageBus& bus)
   : mBus(bus)
 {
-    //processWallMaskImage(bildibild);
     mBus.addSubscriber<MaskMessage>(*this);
 }
 
@@ -14,6 +13,7 @@ Scene::~Scene()
 
 void Scene::handleMessage(const MaskMessage& mess)
 {
+    processWallMaskImage(std::get<0>(mess.mData));
 }
 
 bool Scene::isWallAt(uint32_t x, uint32_t y)
@@ -37,14 +37,21 @@ void Scene::processWallMaskImage(const sf::Image& wallMaskImage)
 
     for(uint32_t i = 0; i < imageSize; i++)
     {
+        std::cout << "\n\n";
         sf::Color colour = imageArray[i];
         // first two must always be true as these are the player colour pixels
         if(i == 0 || i == 1 ||
             colour == sf::Color::Black)
         {
             tempMask.at(i) = true;
+            std::cout << "true, ";
+        }
+        else
+        {
+            std::cout << "false, ";
         }
         // also do colour entity stuff
+        std::cout << "\n\n";
     }
 
     mWallMask = WallMask(tempMask, wallMaskImage.getSize().x);
