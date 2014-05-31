@@ -16,7 +16,7 @@ class InGameState :
         void handleMessage(const QuitMessage& message);
     private:
         fea::MessageBus& mBus;
-        //Scene mScene;
+        Scene mScene;
 
         std::string mNextState;
 };

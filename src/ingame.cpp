@@ -1,7 +1,8 @@
 #include "ingame.hpp"
 
 InGameState::InGameState(fea::MessageBus& bus) : 
-    mBus(bus)
+    mBus(bus),
+    mScene(bus)
 {
     mBus.addSubscriber<QuitMessage>(*this);
 }
