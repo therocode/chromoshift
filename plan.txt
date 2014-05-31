@@ -47,9 +47,9 @@ core elements: TECHNICAL
         - win/lose screen, new level screen
     scene
         / draw images [T]
-        - image loading [K]
-            - scan to create wall mask
-            - scan to create colour entities
+        / image loading [K]
+            X scan to create wall mask
+            / scan to create colour entities
         - player position and colour value
         - colour positions and values
        (- extra elements)
@@ -85,8 +85,9 @@ PLANNING:
 Day One:
 K:
 X   Stub for the scene class
-    Collision checker class (properly)
-    Loading T's image to create arrays and stuff and unstub the scene
+X   Collision checker class (properly)
+X   Loading T's image to create arrays and stuff
+    Unstub the scene
 T:
 X   Main/game application/state machine
 X   Draw images

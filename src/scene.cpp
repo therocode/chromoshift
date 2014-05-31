@@ -37,6 +37,7 @@ void Scene::processWallMaskImage(const sf::Image& wallMaskImage)
 
     for(uint32_t i = 0; i < imageSize; i++)
     {
+        std::cout << i << ", ";
         sf::Color colour = imageArray[i];
         // first two must always be true as these are the player colour pixels
         if(i == 0 || i == 1 ||
@@ -45,6 +46,17 @@ void Scene::processWallMaskImage(const sf::Image& wallMaskImage)
             tempMask.at(i) = true;
         }
         // also do colour entity stuff
+        else if(colour != sf::Color::Transparent)
+        {
+            if(colour == sf::Color::White)
+            {
+                //player entity!
+            }
+            else
+            {
+                // colour entity!
+            }
+        }
     }
 
     mWallMask = WallMask(tempMask, wallMaskImage.getSize().x);
