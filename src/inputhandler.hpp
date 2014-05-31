@@ -6,11 +6,11 @@
 class InputHandler
 {
     public:
-        InputHandler(fea::MessageBus& b, sf::Window& w);
+        InputHandler(fea::MessageBus& bus, sf::Window& window);
         void process();
     private:
-        sf::Window& window;
-        fea::MessageBus& bus;
+        sf::Window& mWindow;
+        fea::MessageBus& mBus;
 
-        std::array<bool, 4> directionsPressed;
+        std::array<bool, 4> mDirectionsPressed;
 };
