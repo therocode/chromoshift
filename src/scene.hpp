@@ -5,12 +5,16 @@
 #include "wallmask.hpp"
 
 class Scene
+  : public fea::MessageReceiver<MaskMessage>
 {
     public:
         Scene(fea::MessageBus& bus);
+        ~Scene();
 
         bool isWallAt(uint32_t x, uint32_t y);
         bool isColourEntityAt(uint32_t x, uint32_t y);
+
+        void handleMessage(const MaskMessage& mess);
 
     private:
         fea::MessageBus& mBus;

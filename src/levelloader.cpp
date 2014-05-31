@@ -14,5 +14,9 @@ void LevelLoader::load(const std::string& path)
     sf::Image bgImage;
     bgImage.loadFromFile(bgPath);
 
+    sf::Image maskImage;
+    maskImage.loadFromFile(maskPath);
+
     mBus.send(BGMessage(bgImage));
+    mBus.send(MaskMessage(maskImage));
 }
