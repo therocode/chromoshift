@@ -77,18 +77,22 @@ void Scene::processWallMaskImage(const sf::Image& wallMaskImage)
             if(colour == sf::Color::White)
             {
                 //player entity!
+                /*
                 mPlayer->setAttribute("colour", glm::uvec3(
                 mPlayer->setAttribute("position", glm::uvec2(
                 //mBus.send(PlayerPositionMessage(4, 6));
                 //mBus.send(PlayerColourMessage(glm::uvec3(123,231,21)));
+                */
             }
             else
             {
                 // colour entity!
+                /*
                 mPlayer->setAttribute("colour", glm::uvec3(
                 mPlayer->setAttribute("position", glm::uvec2(
                 mPlayer->setAttribute("additive", glm::uvec2(
                 mBus.send(ColourPickupCreatedMessage(id, colour, position, additive));
+                */
             }
         }
     }
