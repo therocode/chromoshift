@@ -1,6 +1,6 @@
 #pragma once
 #include <SFML/Graphics.hpp>
-#include <fea/entity/entity.hpp>
+#include <fea/entitysystem.hpp>
 #include "messages.hpp"
 #include "wallmask.hpp"
 
@@ -18,7 +18,8 @@ class Scene
 
     private:
         fea::MessageBus& mBus;
-        fea::EntityManager manager;
+        fea::EntityManager mManager;
+        fea::EntityFactory mFactory;
         fea::EntityPtr mPlayer; // position and colour value
         std::vector<fea::EntityPtr> mColourBlocks; // each have a position and colour value and add/sub
         WallMask mWallMask;

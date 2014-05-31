@@ -1,9 +1,30 @@
 #include "scene.hpp"
+#include <fea/util/entity/glmtypeadder.hpp>
 
 Scene::Scene(fea::MessageBus& bus)
-  : mBus(bus)
+  : mBus(bus),
+    mFactory(mManager)
 {
     mBus.addSubscriber<MaskMessage>(*this);
+
+    fea::util::addGlmDataTypes(mFactory);
+
+    mFactory.registerAttribute("position", "uvec2");
+    mFactory.registerAttribute("color", "uvec3");
+    mFactory.registerAttribute("additive", "bool");
+
+    fea::EntityTemplate playerEntityTemplate;
+    playerEntityTemplate.mAttributes = {{"position"     , "0, 0" },
+        {"color"     , "0, 0, 0" }};
+
+    mFactory.addTemplate("player", playerEntityTemplate);
+
+    fea::EntityTemplate colorPickupTemplate;
+    colorPickupTemplate.mAttributes = {{"position"     , "0, 0" },
+        {"color"     , "0, 0, 0" },
+        {"additive"  , "true"    }};
+
+    mFactory.addTemplate("color_pickup", colorPickupTemplate);
 }
 
 Scene::~Scene()
