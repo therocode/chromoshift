@@ -30,12 +30,12 @@ bool Scene::isColourEntityAt(uint32_t x, uint32_t y)
 void Scene::processWallMaskImage(const sf::Image& wallMaskImage)
 {
     const sf::Color* imageArray = (sf::Color*)wallMaskImage.getPixelsPtr();
-    uint32_t imageSize = wallMaskImage.getSize().x * wallMaskImage.getSize().y * 4;
+    uint32_t imageSize = wallMaskImage.getSize().x * wallMaskImage.getSize().y;
 
     std::vector<bool> tempMask;
     tempMask.resize(imageSize, false);
 
-    for(uint32_t i = 0; i < imageSize/4; i++)
+    for(uint32_t i = 0; i < imageSize; i++)
     {
         sf::Color colour = imageArray[i];
         // first two must always be true as these are the player colour pixels
