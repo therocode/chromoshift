@@ -6,7 +6,7 @@ class Renderer :
     public BGMessageReceiver,
     public ResizeMessageReceiver,
     public PlayerPositionMessageReceiver,
-    public PlayerColorMessageReceiver
+    public PlayerColourMessageReceiver
 {
     public:
         Renderer(fea::MessageBus& b, sf::RenderWindow& w);
@@ -14,7 +14,7 @@ class Renderer :
         virtual void handleMessage(const BGMessage& message) override;
         virtual void handleMessage(const ResizeMessage& message) override;
         virtual void handleMessage(const PlayerPositionMessage& message) override;
-        virtual void handleMessage(const PlayerColorMessage& message) override;
+        virtual void handleMessage(const PlayerColourMessage& message) override;
         void render();
     private:
         fea::MessageBus& mBus;

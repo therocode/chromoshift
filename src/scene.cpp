@@ -77,22 +77,30 @@ void Scene::processWallMaskImage(const sf::Image& wallMaskImage)
             if(colour == sf::Color::White)
             {
                 //player entity!
-                /*
-                mPlayer->setAttribute("colour", glm::uvec3(
-                mPlayer->setAttribute("position", glm::uvec2(
-                //mBus.send(PlayerPositionMessage(4, 6));
-                //mBus.send(PlayerColourMessage(glm::uvec3(123,231,21)));
-                */
+                glm::uvec2 pos = glm::uvec2(i % wallMaskImage.getSize().x, i / wallMaskImage.getSize().x);
+                mPlayer->setAttribute("position", pos);
+                mBus.send(PlayerPositionMessage(pos));
+
+                glm::uvec3 col = glm::uvec3(colour.r, colour.g, colour.b);
+                mPlayer->setAttribute("colour", col);
+                mBus.send(PlayerColourMessage(col));
             }
             else
             {
-                // colour entity!
-                /*
-                mPlayer->setAttribute("colour", glm::uvec3(
-                mPlayer->setAttribute("position", glm::uvec2(
-                mPlayer->setAttribute("additive", glm::uvec2(
-                mBus.send(ColourPickupCreatedMessage(id, colour, position, additive));
-                */
+                fea::EntityPtr pickup = mFactory.instantiate("colour_pickup").lock();
+
+                glm::uvec2 pos = glm::uvec2(i % wallMaskImage.getSize().x, i / wallMaskImage.getSize().x);
+                pickup->setAttribute("position", pos);
+
+                glm::uvec3 col = glm::uvec3(colour.r, colour.g, colour.b);
+                pickup->setAttribute("colour", col);
+
+                bool add = (colour.a == 255) ? true : false;
+                pickup->setAttribute("additive", add);
+
+                size_t id = pickup->getId();
+
+                mBus.send(ColourPickupCreatedMessage(id, pos, col, add));
             }
         }
     }
