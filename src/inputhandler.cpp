@@ -47,7 +47,7 @@ void InputHandler::process()
         }
         else if(event.type == sf::Event::Resized)
         {
-            mBus.send(ResizeMessage(event.size.width, event.size.height));
+            mBus.send(ResizeMessage({event.size.width, event.size.height}));
         }
     }
 

@@ -7,7 +7,7 @@ Renderer::Renderer(fea::MessageBus& b, sf::RenderWindow& w) :
     mBus.addSubscriber<BGMessage>(*this);
     mBus.addSubscriber<ResizeMessage>(*this);
     mBus.addSubscriber<PlayerPositionMessage>(*this);
-    mBus.addSubscriber<PlayerColorMessage>(*this);
+    mBus.addSubscriber<PlayerColourMessage>(*this);
     mBus.addSubscriber<ColourPickupCreatedMessage>(*this);
     mBus.addSubscriber<ColourPickupRemoved>(*this);
 
@@ -23,7 +23,7 @@ Renderer::~Renderer()
     mBus.removeSubscriber<BGMessage>(*this);
     mBus.removeSubscriber<ResizeMessage>(*this);
     mBus.removeSubscriber<PlayerPositionMessage>(*this);
-    mBus.removeSubscriber<PlayerColorMessage>(*this);
+    mBus.removeSubscriber<PlayerColourMessage>(*this);
     mBus.removeSubscriber<ColourPickupCreatedMessage>(*this);
     mBus.removeSubscriber<ColourPickupRemoved>(*this);
 }
@@ -39,30 +39,27 @@ void Renderer::handleMessage(const BGMessage& message)
 
 void Renderer::handleMessage(const ResizeMessage& message)
 {
-    uint32_t width;
-    uint32_t height;
-
-    std::tie(width, height) = message.mData;
+    glm::uvec2 screenSize;
+    std::tie(screenSize) = message.mData;
     sf::View view = mWindow.getView();
-    view.setSize(width, height);
+    view.setSize(screenSize.x, screenSize.y);
     mWindow.setView(view);
 }
 
 void Renderer::handleMessage(const PlayerPositionMessage& message)
 {
-    uint32_t x;
-    uint32_t y;
+    glm::uvec2 position;
 
-    std::tie(x, y) = message.mData;
+    std::tie(position) = message.mData;
 
-    mPlayer.setPosition({x * 30.0f, y * 30.0f});
+    mPlayer.setPosition({position.x * 30.0f, position.y * 30.0f});
     
     sf::View view = mWindow.getView();
-    view.setCenter(x * 30.0f, y * 30.0f);
+    view.setCenter(position.x * 30.0f, position.y * 30.0f);
     mWindow.setView(view);
 }
 
-void Renderer::handleMessage(const PlayerColorMessage& message)
+void Renderer::handleMessage(const PlayerColourMessage& message)
 {
     const glm::uvec3& color = std::get<0>(message.mData);
 
@@ -78,7 +75,7 @@ void Renderer::handleMessage(const ColourPickupCreatedMessage& message)
 
     std::tie(id, position, colour, additive) = message.mData;
 
-    mPickups.emplace(id, createPickup(position, colour, additive);
+    mPickups.emplace(id, createPickup(position, colour, additive));
 }
 
 void Renderer::handleMessage(const ColourPickupRemovedMessage& message)
@@ -104,7 +101,7 @@ void Renderer::render()
     mWindow.draw(mPlayer);
 }
 
-pickup Renderer::createPickup(const glm::uvec2& position, const glm::uvec3& color, bool additive)
+Pickup Renderer::createPickup(const glm::uvec2& position, const glm::uvec3& color, bool additive)
 {
     Pickup pickup;
 
