@@ -77,24 +77,38 @@ void Scene::handleMessage(const MoveMessage& mess)
 
     // add or subtract from player colour
     fea::EntityPtr pickup = colourPickupAtPosition(newPos);
+    if(pickup != nullptr)               // need to check for dying // also entities disapperaing
     {
-        if(pickup != nullptr)               // need to check for dying // also entities disapperaing
+        glm::uvec3 playerColour = mPlayer->getAttribute<glm::uvec3>("colour");
+        glm::uvec3 pickupColour = pickup->getAttribute<glm::uvec3>("colour");
+
+        pickup->getAttribute<bool>("additive") ?
+            (playerColour = playerColour + pickupColour)
+          : (playerColour = playerColour - pickupColour);
+        
+        // check for dying
+        playerColour.r = std::min(4, std::max(0, (int32_t)playerColour.r));
+        playerColour.g = std::min(4, std::max(0, (int32_t)playerColour.g));
+        playerColour.b = std::min(4, std::max(0, (int32_t)playerColour.b));
+
+        mPlayer->setAttribute("colour", playerColour);
+        mBus.send(PlayerColourMessage(playerColour));
+        removeColourPickup(pickup->getId());
+    }
+}
+
+void Scene::removeColourPickup(size_t id)
+{
+        // delete from both entity manager and mColourPickups;
+        //and send a message saying it died
+    for(uint32_t i = 0; i < mColourPickups.size(); i++)
+    {
+        if(id == mColourPickups.at(i)->getId())
         {
-            glm::uvec3 playerColour = mPlayer->getAttribute<glm::uvec3>("colour");
-            glm::uvec3 pickupColour = pickup->getAttribute<glm::uvec3>("colour");
-
-            pickup->getAttribute<bool>("additive") ?
-                (playerColour = playerColour + pickupColour)
-              : (playerColour = playerColour - pickupColour);
-            
-            // check for dying
-            playerColour.r = std::min(4, std::max(0, (int32_t)playerColour.r));
-            playerColour.g = std::min(4, std::max(0, (int32_t)playerColour.g));
-            playerColour.b = std::min(4, std::max(0, (int32_t)playerColour.b));
-
-
-            mPlayer->setAttribute("colour", playerColour);
-            mBus.send(PlayerColourMessage(playerColour));
+            mColourPickups.erase(mColourPickups.begin() + i);
+            mManager.removeEntity(id);
+            mBus.send(ColourPickupRemovedMessage(id));
+            break;
         }
     }
 }

@@ -37,7 +37,7 @@ core elements: TECHNICAL
         X renderer base [T!]
     collisions
         X player vs wall [K]
-        - player vs colours [K]
+        / player vs colours [K]
     rendering
         - player: animation upon death, picking up, winning [K]
         X scene [T]
