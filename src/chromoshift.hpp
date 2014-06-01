@@ -2,6 +2,7 @@
 #include <fea/messaging.hpp>
 #include <SFML/Graphics.hpp>
 #include "inputhandler.hpp"
+#include "audioplayer.hpp"
 
 class ChromoShift : public fea::Application
 {
@@ -15,6 +16,7 @@ class ChromoShift : public fea::Application
         fea::MessageBus mBus;
         sf::RenderWindow mWindow;
         InputHandler mInputHandler;
+        AudioPlayer mAudioPlayer;
 
         fea::GameStateMachine mStateMachine;
 };

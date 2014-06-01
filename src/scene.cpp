@@ -83,7 +83,9 @@ void Scene::handleMessage(const MoveMessage& mess)
         glm::uvec3 playerColour = mPlayer->getAttribute<glm::uvec3>("colour");
         glm::uvec3 pickupColour = pickup->getAttribute<glm::uvec3>("colour");
 
-        pickup->getAttribute<bool>("additive") ?
+        bool additive =  pickup->getAttribute<bool>("additive");
+
+            additive ?
             (playerColour = playerColour + pickupColour)
           : (playerColour = playerColour - pickupColour);
         
@@ -95,6 +97,7 @@ void Scene::handleMessage(const MoveMessage& mess)
         mPlayer->setAttribute("colour", playerColour);
         mBus.send(PlayerColourMessage(playerColour));
         removeColourPickup(pickup->getId());
+        mBus.send(SoundMessage( additive ? ADDER : SUBBER));
     }
 }
 
