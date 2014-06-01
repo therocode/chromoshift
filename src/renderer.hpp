@@ -53,7 +53,9 @@ class Renderer :
 
         // interface stuff //
         sf::Texture mInterfaceTexture;
+        sf::Texture mInterfaceOverlayTexture;
         sf::Sprite mInterfaceSprite;
+        sf::Sprite mInterfaceOverlaySprite;
         glm::uvec2 mInterfacePosition;
         glm::uvec3 mGoalColour;
         glm::uvec3 mPlayerColour;

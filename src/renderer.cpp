@@ -36,9 +36,14 @@ Renderer::Renderer(fea::MessageBus& b, sf::RenderWindow& w) :
     mPlayer.setSize({mTileSize.x, mTileSize.y});
 
     mPickupTexture.loadFromFile("textures/addsub.png");
+
     mInterfaceTexture.loadFromFile("textures/rgb.png");
     mInterfaceSprite.setTexture(mInterfaceTexture);
     mInterfaceSprite.setScale({5.0f, 5.0f});
+
+    mInterfaceOverlayTexture.loadFromFile("textures/rgb-overlay.png");
+    mInterfaceOverlaySprite.setTexture(mInterfaceOverlayTexture);
+    mInterfaceOverlaySprite.setScale({5.0f, 5.0f});
 }
 
 Renderer::~Renderer()
@@ -87,6 +92,7 @@ void Renderer::handleMessage(const GoalColourMessage& message)
 {
     mGoalColour = std::get<0>(message.mData);
 
+    mInterfaceOverlaySprite.setColor(glmToSFColour(mGoalColour));
     for(uint32_t i = 0; i < mGoalColour.r; i++)   //r
     {
         sf::RectangleShape rect;
@@ -189,6 +195,7 @@ void Renderer::render()
 
     // interface //
     mWindow.draw(mInterfaceSprite);
+    mWindow.draw(mInterfaceOverlaySprite);
     for(auto& rect : mGoalColourMeter)
     {
         mWindow.draw(rect);
