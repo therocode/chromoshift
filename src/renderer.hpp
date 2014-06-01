@@ -40,7 +40,7 @@ class Renderer :
         fea::MessageBus& mBus;
         sf::RenderWindow& mWindow;
 
-        glm::vec2 tileSize;
+        glm::vec2 mTileSize;
 
         // scene stuff //
         sf::Texture mBgTexture;

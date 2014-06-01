@@ -22,7 +22,8 @@ void Pickup::tick()
 Renderer::Renderer(fea::MessageBus& b, sf::RenderWindow& w) :
     mBus(b),
     mWindow(w),
-    tileSize({30.0f, 30.0f})
+    mTileSize({30.0f, 30.0f}),
+    mInterfacePosition({0.0f, 0.0f})
 {
     mBus.addSubscriber<BGMessage>(*this);
     mBus.addSubscriber<ResizeMessage>(*this);
@@ -32,7 +33,7 @@ Renderer::Renderer(fea::MessageBus& b, sf::RenderWindow& w) :
     mBus.addSubscriber<ColourPickupCreatedMessage>(*this);
     mBus.addSubscriber<ColourPickupRemovedMessage>(*this);
 
-    mPlayer.setSize({tileSize.x, tileSize.y});
+    mPlayer.setSize({mTileSize.x, mTileSize.y});
 
     mPickupTexture.loadFromFile("textures/addsub.png");
 }
@@ -54,7 +55,7 @@ void Renderer::handleMessage(const BGMessage& message)
 
     mBgTexture.loadFromImage(image);
     mBackground.setTexture(mBgTexture);
-    mBackground.setScale(tileSize.x, tileSize.y);
+    mBackground.setScale(mTileSize.x, mTileSize.y);
 }
 
 void Renderer::handleMessage(const ResizeMessage& message)
@@ -72,10 +73,10 @@ void Renderer::handleMessage(const PlayerPositionMessage& message)
 
     std::tie(position) = message.mData;
 
-    mPlayer.setPosition({position.x * tileSize.x, position.y * tileSize.y});
+    mPlayer.setPosition({position.x * mTileSize.x, position.y * mTileSize.y});
     
     sf::View view = mWindow.getView();
-    view.setCenter(position.x * tileSize.x, position.y * tileSize.y);
+    view.setCenter(position.x * mTileSize.x, position.y * mTileSize.y);
     mWindow.setView(view);
 }
 
@@ -91,14 +92,32 @@ void Renderer::handleMessage(const PlayerColourMessage& message)
     mPlayer.setFillColor(glmToSFColour(mPlayerColour));
 
     mPlayerColourMeter.clear();
-    for(uint32_t i = 0; i < mGoalColour.r; i++)
+    for(uint32_t i = 0; i < mPlayerColour.r; i++)   //r
     {
-        //sf::RectangleShape
-    /*
-    pickup.rectangle.setPosition({position.x * tileSize.x, position.y * tileSize.y});
-    pickup.rectangle.setSize({tileSize.x, tileSize.y});
-    pickup.rectangle.setFillColor(glmToSFColour(color));
-    */
+        sf::RectangleShape rect;
+        glm::uvec2 mInterfacePosition;
+        rect.setPosition({mInterfacePosition.x + (mTileSize.x * i), mInterfacePosition.y + (mTileSize.y * 0)});
+        rect.setSize({mTileSize.x, mTileSize.y});
+        rect.setFillColor(sf::Color(200, 0, 0));
+        mPlayerColourMeter.push_back(rect);
+    }
+    for(uint32_t i = 0; i < mPlayerColour.g; i++)   //g
+    {
+        sf::RectangleShape rect;
+        glm::uvec2 mInterfacePosition;
+        rect.setPosition({mInterfacePosition.x + (mTileSize.x * i), mInterfacePosition.y + (mTileSize.y * 1)});
+        rect.setSize({mTileSize.x, mTileSize.y});
+        rect.setFillColor(sf::Color(0, 200, 0));
+        mPlayerColourMeter.push_back(rect);
+    }
+    for(uint32_t i = 0; i < mPlayerColour.b; i++)   //b
+    {
+        sf::RectangleShape rect;
+        glm::uvec2 mInterfacePosition;
+        rect.setPosition({mInterfacePosition.x + (mTileSize.x * i), mInterfacePosition.y + (mTileSize.y * 2)});
+        rect.setSize({mTileSize.x, mTileSize.y});
+        rect.setFillColor(sf::Color(0, 0, 200));
+        mPlayerColourMeter.push_back(rect);
     }
 }
 
@@ -137,6 +156,10 @@ void Renderer::render()
 
     mWindow.draw(mPlayer);
 
+    for(auto& rect : mPlayerColourMeter)
+    {
+        mWindow.draw(rect);
+    }
     /*
     mWindow.draw(mInterfaceBackground);
     mWindow.draw(mGoalColours);
@@ -148,10 +171,10 @@ Pickup Renderer::createPickup(const glm::uvec2& position, const glm::uvec3& colo
 {
     Pickup pickup;
 
-    pickup.rectangle.setPosition({position.x * tileSize.x, position.y * tileSize.y});
-    pickup.rectangle.setSize({tileSize.x, tileSize.y});
+    pickup.rectangle.setPosition({position.x * mTileSize.x, position.y * mTileSize.y});
+    pickup.rectangle.setSize({mTileSize.x, mTileSize.y});
     pickup.rectangle.setFillColor(glmToSFColour(color));
-    pickup.overlay.setPosition({position.x * tileSize.x, position.y * tileSize.y});
+    pickup.overlay.setPosition({position.x * mTileSize.x, position.y * mTileSize.y});
     pickup.overlay.setTexture(mPickupTexture);
     pickup.overlay.setTextureRect({additive ? 0 : 6, 0, 6, 6});
     pickup.overlay.setScale({5.0f, 5.0f});
