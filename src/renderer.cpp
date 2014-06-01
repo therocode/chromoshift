@@ -22,7 +22,7 @@ void Pickup::tick()
 Renderer::Renderer(fea::MessageBus& b, sf::RenderWindow& w) :
     mBus(b),
     mWindow(w),
-    tileSize({tileSize.x, tileSize.y})
+    tileSize({30.0f, 30.0f})
 {
     mBus.addSubscriber<BGMessage>(*this);
     mBus.addSubscriber<ResizeMessage>(*this);
@@ -94,6 +94,11 @@ void Renderer::handleMessage(const PlayerColourMessage& message)
     for(uint32_t i = 0; i < mGoalColour.r; i++)
     {
         //sf::RectangleShape
+    /*
+    pickup.rectangle.setPosition({position.x * tileSize.x, position.y * tileSize.y});
+    pickup.rectangle.setSize({tileSize.x, tileSize.y});
+    pickup.rectangle.setFillColor(glmToSFColour(color));
+    */
     }
 }
 
