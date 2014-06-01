@@ -125,6 +125,7 @@ fea::EntityPtr Scene::colourPickupAtPosition(const glm::uvec2& pos)
 
 void Scene::processWallMaskImage(const sf::Image& wallMaskImage)
 {
+    mColourPickups.clear();
     const sf::Color* imageArray = (sf::Color*)wallMaskImage.getPixelsPtr();
     uint32_t imageSize = wallMaskImage.getSize().x * wallMaskImage.getSize().y;
 

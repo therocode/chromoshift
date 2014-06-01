@@ -204,11 +204,6 @@ void Renderer::render()
     {
         mWindow.draw(rect);
     }
-    /*
-    mWindow.draw(mInterfaceBackground);
-    mWindow.draw(mGoalColours);
-    mWindow.draw(mPlayerColours);
-    */
 }
 
 Pickup Renderer::createPickup(const glm::uvec2& position, const glm::uvec3& color, bool additive)
