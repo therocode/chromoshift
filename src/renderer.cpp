@@ -73,7 +73,7 @@ void Renderer::handleMessage(const ColourPickupCreatedMessage& message)
 
     std::tie(id, position, colour, additive) = message.mData;
 
-    mPickups.emplace(id, createPickup(position, colour, additive);
+    mPickups.emplace(id, createPickup(position, colour, additive));
 }
 
 void Renderer::render()
@@ -90,7 +90,7 @@ void Renderer::render()
     mWindow.draw(mPlayer);
 }
 
-pickup Renderer::createPickup(const glm::uvec2& position, const glm::uvec3& color, bool additive)
+Pickup Renderer::createPickup(const glm::uvec2& position, const glm::uvec3& color, bool additive)
 {
     Pickup pickup;
 

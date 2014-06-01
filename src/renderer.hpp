@@ -13,7 +13,7 @@ class Renderer :
     public BGMessageReceiver,
     public ResizeMessageReceiver,
     public PlayerPositionMessageReceiver,
-    public PlayerColourMessageReceiver
+    public PlayerColourMessageReceiver,
     public ColourPickupCreatedMessageReceiver
 {
     public:
@@ -26,7 +26,7 @@ class Renderer :
         virtual void handleMessage(const ColourPickupCreatedMessage& message) override;
         void render();
     private:
-        void createPickup(const glm::uvec2& position, const glm::uvec3& color, bool additive);
+        Pickup createPickup(const glm::uvec2& position, const glm::uvec3& color, bool additive);
         sf::Color glmToSFColor(const glm::uvec3& col) const;
         fea::MessageBus& mBus;
         sf::RenderWindow& mWindow;
