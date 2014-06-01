@@ -2,7 +2,8 @@
 #include "ingame.hpp"
 
 ChromoShift::ChromoShift() :
-    mInputHandler(mBus, mWindow)
+    mInputHandler(mBus, mWindow),
+    mAudioPlayer(mBus)
 {
 }
 

@@ -23,7 +23,7 @@ if(GLM_FOUND)
     include_directories(${GLM_INCLUDE_DIRS})
 endif()
 
-find_package(SFML COMPONENTS system window graphics REQUIRED)
+find_package(SFML COMPONENTS system window graphics audio REQUIRED)
 if(SFML_FOUND)
     include_directories(${SFML_INCLUDE_DIRS})
 endif()

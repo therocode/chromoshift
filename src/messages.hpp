@@ -2,6 +2,7 @@
 #include <fea/messaging.hpp>
 #include <glm/glm.hpp>
 #include "direction.hpp"
+#include "sounds.hpp"
 
 namespace sf
 {
@@ -28,3 +29,5 @@ FEA_DECLARE_MESSAGE(PlayerColourMessage, const glm::uvec3&);
 FEA_DECLARE_MESSAGE(ColourPickupCreatedMessage, size_t, const glm::uvec2&, const glm::uvec3&, bool);
                                 //              id
 FEA_DECLARE_MESSAGE(ColourPickupRemovedMessage, size_t);
+                                // sound
+FEA_DECLARE_MESSAGE(SoundMessage, Sound);
