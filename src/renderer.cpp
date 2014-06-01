@@ -40,12 +40,12 @@ Renderer::Renderer(fea::MessageBus& b, sf::RenderWindow& w) :
     mInterfaceTexture.loadFromFile("textures/rgb.png");
     mInterfaceSprite.setTexture(mInterfaceTexture);
     mInterfaceSprite.setScale({5.0f, 5.0f});
-    mInterfaceSprite.setPosition({mInterfacePosition.x, mInterfacePosition.y});
+    mInterfaceSprite.setPosition({(float)mInterfacePosition.x, (float)mInterfacePosition.y});
 
     mInterfaceOverlayTexture.loadFromFile("textures/rgb-overlay.png");
     mInterfaceOverlaySprite.setTexture(mInterfaceOverlayTexture);
     mInterfaceOverlaySprite.setScale({5.0f, 5.0f});
-    mInterfaceOverlaySprite.setPosition({mInterfacePosition.x, mInterfacePosition.y});
+    mInterfaceOverlaySprite.setPosition({(float)mInterfacePosition.x, (float)mInterfacePosition.y});
 
     mSceneView.reset({0, 0, 800, 600});
     mInterfaceView.reset({0, 0, 800, 600});
