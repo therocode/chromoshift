@@ -10,8 +10,10 @@ class LevelManager
         const std::string& same() const;
         const std::string& next();
         bool hasNext() const;
+        const std::string& previous();
+        bool hasPrevious() const;
         void reset();
     private:
-        uint32_t mIterator;
+        int32_t mIterator;
         std::vector<std::string> mLevels;
 };

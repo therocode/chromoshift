@@ -42,6 +42,17 @@ bool LevelManager::hasNext() const
     return mIterator + 1 < mLevels.size();
 }
 
+const std::string& LevelManager::previous()
+{
+    mIterator--;
+    return mLevels[mIterator];
+}
+
+bool LevelManager::hasPrevious() const
+{
+    return mIterator - 1 >= 0;
+}
+
 void LevelManager::reset()
 {
     mIterator = 0;

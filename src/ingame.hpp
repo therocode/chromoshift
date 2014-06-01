@@ -10,7 +10,8 @@
 
 class InGameState : 
     public fea::GameState,
-    public QuitMessageReceiver
+    public QuitMessageReceiver,
+    public LevelAdvanceMessageReceiver
 {
     public:
         InGameState(fea::MessageBus& bus, sf::RenderWindow& w);
@@ -19,8 +20,10 @@ class InGameState :
         void activate(const std::string& previous) override;
         std::string run() override;
         void handleMessage(const QuitMessage& message);
+        void handleMessage(const LevelAdvanceMessage& message);
     private:
         void nextLevel();
+        void previousLevel();
         fea::MessageBus& mBus;
         Scene mScene;
         Interface mInterface;
