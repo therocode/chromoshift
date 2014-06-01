@@ -67,6 +67,7 @@ void Renderer::handleMessage(const BGMessage& message)
     const sf::Image& image = std::get<0>(message.mData);
 
     mBgTexture.loadFromImage(image);
+    mBackground = sf::Sprite();
     mBackground.setTexture(mBgTexture);
     mBackground.setScale(mTileSize.x, mTileSize.y);
 }
