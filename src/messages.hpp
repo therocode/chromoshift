@@ -16,8 +16,8 @@ FEA_DECLARE_MESSAGE(MoveMessage, Direction);
 FEA_DECLARE_MESSAGE(BGMessage, const sf::Image&);
                                 // mask image
 FEA_DECLARE_MESSAGE(MaskMessage, const sf::Image&);
-                                // change to uvec2 screen size
-FEA_DECLARE_MESSAGE(ResizeMessage, uint32_t, uint32_t);
+                                // screen size
+FEA_DECLARE_MESSAGE(ResizeMessage, const glm::uvec2&);
                                 //         position
 FEA_DECLARE_MESSAGE(PlayerPositionMessage, const glm::uvec2&);
                                 //       colour
