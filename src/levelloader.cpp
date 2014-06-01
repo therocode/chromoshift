@@ -19,4 +19,30 @@ void LevelLoader::load(const std::string& path)
 
     mBus.send(BGMessage(bgImage));
     mBus.send(MaskMessage(maskImage));
+
+    glm::ivec3 accumulator;
+    int32_t accumulatorAmount = 0;
+
+    for(int32_t x = 0; x < bgImage.getSize().x; x++)
+    {
+        for(int32_t y = 0; y < bgImage.getSize().y; y++)
+        {
+            if(x == 0 || y == 0 || x == bgImage.getSize().x - 1 || y == bgImage.getSize().y)
+            {
+                sf::Color colour = bgImage.getPixel(x, y);
+                accumulator.r += colour.r;
+                accumulator.g += colour.g;
+                accumulator.b += colour.b;
+                accumulatorAmount++;
+            }
+        }
+    }
+
+    sf::Color average;
+
+    average.r = accumulator.r / accumulatorAmount;
+    average.g = accumulator.g / accumulatorAmount;
+    average.b = accumulator.b / accumulatorAmount;
+
+    mBus.send(BackgroundColourMessage(average));
 }
