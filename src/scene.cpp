@@ -78,7 +78,7 @@ void Scene::handleMessage(const MoveMessage& mess)
     // add or subtract from player colour
     fea::EntityPtr pickup = colourPickupAtPosition(newPos);
     {
-        if(pickup != nullptr)               // need to check for dying
+        if(pickup != nullptr)               // need to check for dying // also entities disapperaing
         {
             glm::uvec3 playerColour = mPlayer->getAttribute<glm::uvec3>("colour");
             glm::uvec3 pickupColour = pickup->getAttribute<glm::uvec3>("colour");
@@ -86,7 +86,14 @@ void Scene::handleMessage(const MoveMessage& mess)
             pickup->getAttribute<bool>("additive") ?
                 (playerColour = playerColour + pickupColour)
               : (playerColour = playerColour - pickupColour);
+            
+            // check for dying
+            playerColour.r = std::min(4, std::max(0, (int32_t)playerColour.r));
+            playerColour.g = std::min(4, std::max(0, (int32_t)playerColour.g));
+            playerColour.b = std::min(4, std::max(0, (int32_t)playerColour.b));
 
+
+            mPlayer->setAttribute("colour", playerColour);
             mBus.send(PlayerColourMessage(playerColour));
         }
     }
@@ -95,7 +102,7 @@ void Scene::handleMessage(const MoveMessage& mess)
 fea::EntityPtr Scene::colourPickupAtPosition(const glm::uvec2& pos)
 {
     fea::EntityPtr tempEntity = nullptr;
-    for(uint32_t i = 0; i < mColourPickups.size(); i++)
+    for(uint32_t i = 0; i < mColourPickups.size(); i++) // C++11 smart stuff
     {
         glm::uvec2 entityPosition = mColourPickups.at(i)->getAttribute<glm::uvec2>("position");
         if(pos == entityPosition)
