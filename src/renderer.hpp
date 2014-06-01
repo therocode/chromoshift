@@ -29,7 +29,7 @@ class Renderer :
         void render();
     private:
         Pickup createPickup(const glm::uvec2& position, const glm::uvec3& color, bool additive);
-        sf::Color glmToSFColor(const glm::uvec3& col) const;
+        sf::Color glmToSFColour(const glm::uvec3& col) const;
         fea::MessageBus& mBus;
         sf::RenderWindow& mWindow;
 

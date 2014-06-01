@@ -63,7 +63,7 @@ void Renderer::handleMessage(const PlayerColourMessage& message)
 {
     const glm::uvec3& color = std::get<0>(message.mData);
 
-    mPlayer.setFillColor(glmToSFColor(color));
+    mPlayer.setFillColor(glmToSFColour(color));
 }
 
 void Renderer::handleMessage(const ColourPickupCreatedMessage& message)
@@ -107,7 +107,7 @@ Pickup Renderer::createPickup(const glm::uvec2& position, const glm::uvec3& colo
 
     pickup.rectangle.setPosition({position.x * 30.0f, position.y * 30.0f});
     pickup.rectangle.setSize({30.0f, 30.0f});
-    pickup.rectangle.setFillColor(glmToSFColor(color));
+    pickup.rectangle.setFillColor(glmToSFColour(color));
     pickup.overlay.setPosition({position.x * 30.0f, position.y * 30.0f});
     pickup.overlay.setTexture(mPickupTexture);
     pickup.overlay.setTextureRect({additive ? 0 : 6, 0, 6, 6});
@@ -116,7 +116,7 @@ Pickup Renderer::createPickup(const glm::uvec2& position, const glm::uvec3& colo
     return pickup;
 }
 
-sf::Color Renderer::glmToSFColor(const glm::uvec3& col) const
+sf::Color Renderer::glmToSFColour(const glm::uvec3& col) const
 {
     sf::Color realColor;
 
