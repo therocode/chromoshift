@@ -21,7 +21,8 @@ class Renderer :
     public GoalColourMessageReceiver,
     public PlayerColourMessageReceiver,
     public ColourPickupCreatedMessageReceiver,
-    public ColourPickupRemovedMessageReceiver
+    public ColourPickupRemovedMessageReceiver,
+    public BackgroundColourMessageReceiver
 {
     public:
         Renderer(fea::MessageBus& b, sf::RenderWindow& w);
@@ -33,12 +34,15 @@ class Renderer :
         virtual void handleMessage(const PlayerColourMessage& message) override;
         virtual void handleMessage(const ColourPickupCreatedMessage& message) override;
         virtual void handleMessage(const ColourPickupRemovedMessage& message) override;
+        virtual void handleMessage(const BackgroundColourMessage& message) override;
         void render();
     private:
         Pickup createPickup(const glm::uvec2& position, const glm::uvec3& color, bool additive);
         sf::Color glmToSFColour(const glm::uvec3& col) const;
         fea::MessageBus& mBus;
         sf::RenderWindow& mWindow;
+
+        sf::Color mBackgroundColor;
 
         glm::vec2 mTileSize;
 

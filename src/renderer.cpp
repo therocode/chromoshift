@@ -32,6 +32,7 @@ Renderer::Renderer(fea::MessageBus& b, sf::RenderWindow& w) :
     mBus.addSubscriber<PlayerColourMessage>(*this);
     mBus.addSubscriber<ColourPickupCreatedMessage>(*this);
     mBus.addSubscriber<ColourPickupRemovedMessage>(*this);
+    mBus.addSubscriber<BackgroundColourMessage>(*this);
 
     mPlayer.setSize({mTileSize.x, mTileSize.y});
 
@@ -60,6 +61,7 @@ Renderer::~Renderer()
     mBus.removeSubscriber<PlayerColourMessage>(*this);
     mBus.removeSubscriber<ColourPickupCreatedMessage>(*this);
     mBus.removeSubscriber<ColourPickupRemovedMessage>(*this);
+    mBus.removeSubscriber<BackgroundColourMessage>(*this);
 }
 
 void Renderer::handleMessage(const BGMessage& message)
@@ -176,9 +178,14 @@ void Renderer::handleMessage(const ColourPickupRemovedMessage& message)
     mPickups.erase(id);
 }
 
+void Renderer::handleMessage(const BackgroundColourMessage& message)
+{
+    mBackgroundColor = std::get<0>(message.mData);
+}
+
 void Renderer::render()
 {
-    mWindow.clear();
+    mWindow.clear(mBackgroundColor);
 
     // scene //
     mWindow.setView(mSceneView);
