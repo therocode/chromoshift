@@ -52,6 +52,8 @@ class Renderer :
         std::unordered_map<size_t, Pickup> mPickups;
 
         // interface stuff //
+        sf::Texture mInterfaceTexture;
+        sf::Sprite mInterfaceSprite;
         glm::uvec2 mInterfacePosition;
         glm::uvec3 mGoalColour;
         glm::uvec3 mPlayerColour;

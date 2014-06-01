@@ -36,6 +36,9 @@ Renderer::Renderer(fea::MessageBus& b, sf::RenderWindow& w) :
     mPlayer.setSize({mTileSize.x, mTileSize.y});
 
     mPickupTexture.loadFromFile("textures/addsub.png");
+    mInterfaceTexture.loadFromFile("textures/rgb.png");
+    mInterfaceSprite.setTexture(mInterfaceTexture);
+    mInterfaceSprite.setScale({5.0f, 5.0f});
 }
 
 Renderer::~Renderer()
@@ -83,6 +86,34 @@ void Renderer::handleMessage(const PlayerPositionMessage& message)
 void Renderer::handleMessage(const GoalColourMessage& message)
 {
     mGoalColour = std::get<0>(message.mData);
+
+    for(uint32_t i = 0; i < mGoalColour.r; i++)   //r
+    {
+        sf::RectangleShape rect;
+        glm::uvec2 mInterfacePosition;
+        rect.setPosition({mInterfacePosition.x + (mTileSize.x * (i + 2)), mInterfacePosition.y + (mTileSize.y * 0)});
+        rect.setSize({mTileSize.x, mTileSize.y});
+        rect.setFillColor(sf::Color(255, 120, 120));
+        mGoalColourMeter.push_back(rect);
+    }
+    for(uint32_t i = 0; i < mGoalColour.g; i++)   //g
+    {
+        sf::RectangleShape rect;
+        glm::uvec2 mInterfacePosition;
+        rect.setPosition({mInterfacePosition.x + (mTileSize.x * (i + 2)), mInterfacePosition.y + (mTileSize.y * 1)});
+        rect.setSize({mTileSize.x, mTileSize.y});
+        rect.setFillColor(sf::Color(120, 255, 120));
+        mGoalColourMeter.push_back(rect);
+    }
+    for(uint32_t i = 0; i < mGoalColour.b; i++)   //b
+    {
+        sf::RectangleShape rect;
+        glm::uvec2 mInterfacePosition;
+        rect.setPosition({mInterfacePosition.x + (mTileSize.x * (i + 2)), mInterfacePosition.y + (mTileSize.y * 2)});
+        rect.setSize({mTileSize.x, mTileSize.y});
+        rect.setFillColor(sf::Color(120, 120, 255));
+        mGoalColourMeter.push_back(rect);
+    }
 }
 
 void Renderer::handleMessage(const PlayerColourMessage& message)
@@ -96,27 +127,27 @@ void Renderer::handleMessage(const PlayerColourMessage& message)
     {
         sf::RectangleShape rect;
         glm::uvec2 mInterfacePosition;
-        rect.setPosition({mInterfacePosition.x + (mTileSize.x * i), mInterfacePosition.y + (mTileSize.y * 0)});
+        rect.setPosition({mInterfacePosition.x + (mTileSize.x * (i + 2)), mInterfacePosition.y + (mTileSize.y * 0)});
         rect.setSize({mTileSize.x, mTileSize.y});
-        rect.setFillColor(sf::Color(200, 0, 0));
+        rect.setFillColor(sf::Color(255, 0, 0));
         mPlayerColourMeter.push_back(rect);
     }
     for(uint32_t i = 0; i < mPlayerColour.g; i++)   //g
     {
         sf::RectangleShape rect;
         glm::uvec2 mInterfacePosition;
-        rect.setPosition({mInterfacePosition.x + (mTileSize.x * i), mInterfacePosition.y + (mTileSize.y * 1)});
+        rect.setPosition({mInterfacePosition.x + (mTileSize.x * (i + 2)), mInterfacePosition.y + (mTileSize.y * 1)});
         rect.setSize({mTileSize.x, mTileSize.y});
-        rect.setFillColor(sf::Color(0, 200, 0));
+        rect.setFillColor(sf::Color(0, 255, 0));
         mPlayerColourMeter.push_back(rect);
     }
     for(uint32_t i = 0; i < mPlayerColour.b; i++)   //b
     {
         sf::RectangleShape rect;
         glm::uvec2 mInterfacePosition;
-        rect.setPosition({mInterfacePosition.x + (mTileSize.x * i), mInterfacePosition.y + (mTileSize.y * 2)});
+        rect.setPosition({mInterfacePosition.x + (mTileSize.x * (i + 2)), mInterfacePosition.y + (mTileSize.y * 2)});
         rect.setSize({mTileSize.x, mTileSize.y});
-        rect.setFillColor(sf::Color(0, 0, 200));
+        rect.setFillColor(sf::Color(0, 0, 255));
         mPlayerColourMeter.push_back(rect);
     }
 }
@@ -156,6 +187,12 @@ void Renderer::render()
 
     mWindow.draw(mPlayer);
 
+    // interface //
+    mWindow.draw(mInterfaceSprite);
+    for(auto& rect : mGoalColourMeter)
+    {
+        mWindow.draw(rect);
+    }
     for(auto& rect : mPlayerColourMeter)
     {
         mWindow.draw(rect);
