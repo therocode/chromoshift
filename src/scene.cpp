@@ -124,7 +124,7 @@ void Scene::processWallMaskImage(const sf::Image& wallMaskImage)
                 mPlayer->setAttribute("position", pos);
                 mBus.send(PlayerPositionMessage(pos));
 
-                glm::uvec3 col = glm::uvec3(startColour.r / 63, startColour.g / 63, startColour.b / 63);
+                glm::uvec3 col = SFToGlmColour(startColour);
                 mPlayer->setAttribute("colour", col);
                 mBus.send(PlayerColourMessage(col));
             }
@@ -136,7 +136,7 @@ void Scene::processWallMaskImage(const sf::Image& wallMaskImage)
                 glm::uvec2 pos = glm::uvec2(i % wallMaskImage.getSize().x, i / wallMaskImage.getSize().x);
                 pickup->setAttribute("position", pos);
 
-                glm::uvec3 col = glm::uvec3(colour.r / 63, colour.g / 63, colour.b / 63);
+                glm::uvec3 col = SFToGlmColour(colour);
                 pickup->setAttribute("colour", col);
 
                 bool add = (colour.a == 255) ? true : false;
@@ -150,4 +150,9 @@ void Scene::processWallMaskImage(const sf::Image& wallMaskImage)
     }
 
     mWallMask = WallMask(tempMask, wallMaskImage.getSize().x);
+}
+
+glm::uvec3 Scene::SFToGlmColour(const sf::Color& colour)
+{
+    return glm::uvec3(colour.r / 63, colour.g / 63, colour.b / 63);
 }

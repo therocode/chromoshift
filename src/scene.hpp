@@ -27,4 +27,5 @@ class Scene
         WallMask mWallMask;
 
         void processWallMaskImage(const sf::Image& wallMaskImage);
+        glm::uvec3 SFToGlmColour(const sf::Color& colour);
 };
