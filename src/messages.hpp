@@ -35,5 +35,7 @@ FEA_DECLARE_MESSAGE(SoundMessage, Sound);
 FEA_DECLARE_MESSAGE(SongPlayingMessage, bool);
 //                                       amount
 FEA_DECLARE_MESSAGE(LevelAdvanceMessage, int32_t);
+//                                       amount
+FEA_DECLARE_MESSAGE(LevelRestartMessage);
 //                                                  colour
 FEA_DECLARE_MESSAGE(BackgroundColourMessage, const sf::Color&);
