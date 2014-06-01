@@ -34,25 +34,28 @@ core elements: TECHNICAL
        (- menu stuff)
     boring stuff
         X game state stuff [T]
-        - renderer base [T!]
+        X renderer base [T!]
     collisions
-        - player vs wall [K]
+        X player vs wall [K]
         - player vs colours [K]
     rendering
         - player: animation upon death, picking up, winning [K]
-        - scene [T]
-        - camera movement [T]
-        - colours: animated, disappearing
+        X scene [T]
+        X camera movement [T]
+        - colours: animated, disappearing [T]
         - interface: animation upon picking up
         - win/lose screen, new level screen
     scene
         / draw images [T]
-        / image loading [K]
+        X image loading [K]
             X scan to create wall mask
-            / scan to create colour entities
-        - player position and colour value
-        - colour positions and values
+            X scan to create colour entities
+        X player position and colour value [K]
+        X colour positions and values [K]
        (- extra elements)
+    interface
+        - player colour [K]
+        - goal colour [K]
    (sound)
 
 klasses:

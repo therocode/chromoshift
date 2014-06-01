@@ -20,9 +20,11 @@ class Scene
         fea::EntityManager mManager;
         fea::EntityFactory mFactory;
         fea::EntityPtr mPlayer; 
+        // the colours within the colour pickups and player are in 0,1,2,3,4 form
         std::vector<fea::EntityPtr> mColourPickups; 
         WallMask mWallMask;
 
         void processWallMaskImage(const sf::Image& wallMaskImage);
         glm::uvec3 SFToGlmColour(const sf::Color& colour);
+        fea::EntityPtr colourPickupAtPosition(const glm::uvec2& pos);
 };
