@@ -42,7 +42,6 @@ Scene::~Scene()
 
 void Scene::handleMessage(const MaskMessage& mess)
 {
-    // remove all pickups and such
     processWallMaskImage(std::get<0>(mess.mData));
 }
 
@@ -125,7 +124,12 @@ fea::EntityPtr Scene::colourPickupAtPosition(const glm::uvec2& pos)
 
 void Scene::processWallMaskImage(const sf::Image& wallMaskImage)
 {
-    mColourPickups.clear();
+    // clear the pickups
+    while(mColourPickups.size() > 0)
+    {
+        removeColourPickup(mColourPickups.begin()->first);
+    }
+
     const sf::Color* imageArray = (sf::Color*)wallMaskImage.getPixelsPtr();
     uint32_t imageSize = wallMaskImage.getSize().x * wallMaskImage.getSize().y;
 
