@@ -21,7 +21,7 @@ class Scene
         fea::EntityFactory mFactory;
         fea::EntityPtr mPlayer; 
         // the colours within the colour pickups and player are in 0,1,2,3,4 form
-        std::vector<fea::EntityPtr> mColourPickups;  // refactor later to std::unordered_map<fea::entlekrje>
+        std::unordered_map<size_t, fea::EntityPtr> mColourPickups;
         WallMask mWallMask;
 
         void processWallMaskImage(const sf::Image& wallMaskImage);

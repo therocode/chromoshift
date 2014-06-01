@@ -42,6 +42,7 @@ Scene::~Scene()
 
 void Scene::handleMessage(const MaskMessage& mess)
 {
+    // remove all pickups and such
     processWallMaskImage(std::get<0>(mess.mData));
 }
 
@@ -77,7 +78,7 @@ void Scene::handleMessage(const MoveMessage& mess)
 
     // add or subtract from player colour
     fea::EntityPtr pickup = colourPickupAtPosition(newPos);
-    if(pickup != nullptr)               // need to check for dying // also entities disapperaing
+    if(pickup != nullptr)               // need to check for dying 
     {
         glm::uvec3 playerColour = mPlayer->getAttribute<glm::uvec3>("colour");
         glm::uvec3 pickupColour = pickup->getAttribute<glm::uvec3>("colour");
@@ -99,29 +100,20 @@ void Scene::handleMessage(const MoveMessage& mess)
 
 void Scene::removeColourPickup(size_t id)
 {
-        // delete from both entity manager and mColourPickups;
-        //and send a message saying it died
-    for(uint32_t i = 0; i < mColourPickups.size(); i++)
-    {
-        if(id == mColourPickups.at(i)->getId())
-        {
-            mColourPickups.erase(mColourPickups.begin() + i);
-            mManager.removeEntity(id);
-            mBus.send(ColourPickupRemovedMessage(id));
-            break;
-        }
-    }
+    mColourPickups.erase(id);
+    mManager.removeEntity(id);
+    mBus.send(ColourPickupRemovedMessage(id));
 }
 
 fea::EntityPtr Scene::colourPickupAtPosition(const glm::uvec2& pos)
 {
     fea::EntityPtr tempEntity = nullptr;
-    for(uint32_t i = 0; i < mColourPickups.size(); i++) // C++11 smart stuff
+    for(auto pickup : mColourPickups)
     {
-        glm::uvec2 entityPosition = mColourPickups.at(i)->getAttribute<glm::uvec2>("position");
+        glm::uvec2 entityPosition = pickup.second->getAttribute<glm::uvec2>("position");
         if(pos == entityPosition)
         {
-            tempEntity = mColourPickups.at(i);
+            tempEntity = pickup.second;
         }
     }
 
@@ -187,7 +179,7 @@ void Scene::processWallMaskImage(const sf::Image& wallMaskImage)
 
                 size_t id = pickup->getId();
 
-                mColourPickups.push_back(pickup);
+                mColourPickups.emplace(id, pickup);
                 mBus.send(ColourPickupCreatedMessage(id, pos, col, add));
             }
         }
