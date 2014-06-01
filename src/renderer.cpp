@@ -97,6 +97,7 @@ void Renderer::handleMessage(const GoalColourMessage& message)
 {
     mGoalColour = std::get<0>(message.mData);
 
+    mGoalColourMeter.clear();
     mInterfaceOverlaySprite.setColor(glmToSFColour(mGoalColour));
     for(uint32_t i = 0; i < mGoalColour.r; i++)   //r
     {
