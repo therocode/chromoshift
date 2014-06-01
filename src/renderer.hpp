@@ -3,10 +3,15 @@
 #include <unordered_map>
 #include <SFML/Graphics.hpp>
 
-struct Pickup
+class Pickup
 {
-    sf::RectangleShape rectangle;
-    sf::Sprite overlay;
+    public:
+        Pickup();
+        sf::RectangleShape rectangle;
+        sf::Sprite overlay;
+        void tick();
+    private:
+        int32_t counter;
 };
 
 class Renderer :

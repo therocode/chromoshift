@@ -1,4 +1,23 @@
 #include "renderer.hpp"
+#include <iostream>
+
+Pickup::Pickup() :
+    counter(0)
+{
+}
+
+void Pickup::tick()
+{
+    counter++;
+    if(counter == 64)
+        counter = 0;
+
+    int32_t opacity = (abs(counter / 2 - 16) / 2) + 4;
+
+    sf::Color current = overlay.getColor();
+    current.a = std::min(255, opacity * 16);
+    overlay.setColor(current);
+}
 
 Renderer::Renderer(fea::MessageBus& b, sf::RenderWindow& w) :
     mBus(b),
@@ -92,10 +111,11 @@ void Renderer::render()
     mWindow.clear();
     mWindow.draw(mBackground);
 
-    for(const auto& pickup : mPickups)
+    for(auto& pickup : mPickups)
     {
         mWindow.draw(pickup.second.rectangle);
         mWindow.draw(pickup.second.overlay);
+        pickup.second.tick();
     }
 
     mWindow.draw(mPlayer);
