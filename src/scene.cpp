@@ -1,4 +1,5 @@
 #include "scene.hpp"
+#include "direction.hpp"
 #include <fea/util/entity/glmtypeadder.hpp>
 #include <fea/util/entity/basictypeadder.hpp>
 #include <glm/glm.hpp>
@@ -8,24 +9,25 @@ Scene::Scene(fea::MessageBus& bus)
     mFactory(mManager)
 {
     mBus.addSubscriber<MaskMessage>(*this);
+    mBus.addSubscriber<MoveMessage>(*this);
 
     fea::util::addGlmDataTypes(mFactory);
     fea::util::addBasicDataTypes(mFactory);
 
     mFactory.registerAttribute("position", "uvec2");
-    mFactory.registerAttribute("colour", "uvec3");
-    mFactory.registerAttribute("additive", "bool");
+    mFactory.registerAttribute("colour"  , "uvec3");
+    mFactory.registerAttribute("additive", "bool" );
 
     fea::EntityTemplate playerEntityTemplate;
-    playerEntityTemplate.mAttributes = {{"position"     , "0, 0" },
-        {"colour"     , "0, 0, 0" }};
+    playerEntityTemplate.mAttributes = {{"position", "0, 0"    },
+                                        {"colour"  , "0, 0, 0" }};
 
     mFactory.addTemplate("player", playerEntityTemplate);
 
     fea::EntityTemplate colourPickupTemplate;
-    colourPickupTemplate.mAttributes = {{"position"     , "0, 0" },
-        {"colour"     , "0, 0, 0" },
-        {"additive"  , "true"    }};
+    colourPickupTemplate.mAttributes = {{"position", "0, 0"   },
+                                        {"colour"  , "0, 0, 0"},
+                                        {"additive", "true"   }};
 
     mFactory.addTemplate("colour_pickup", colourPickupTemplate);
 
@@ -35,11 +37,41 @@ Scene::Scene(fea::MessageBus& bus)
 Scene::~Scene()
 {
     mBus.removeSubscriber<MaskMessage>(*this);
+    mBus.removeSubscriber<MoveMessage>(*this);
 }
 
 void Scene::handleMessage(const MaskMessage& mess)
 {
     processWallMaskImage(std::get<0>(mess.mData));
+}
+
+void Scene::handleMessage(const MoveMessage& mess)
+{
+    Direction dir;
+    std::tie(dir) = mess.mData;
+
+    glm::uvec2 newPos;
+
+                                        // do boundary checking!
+    if(dir == Direction::LEFT)
+    {
+        newPos = mPlayer->getAttribute<glm::uvec2>("position") + glm::uvec2(-1, 0);
+    }
+    else if(dir == Direction::RIGHT)
+    {
+        newPos = mPlayer->getAttribute<glm::uvec2>("position") + glm::uvec2(1, 0);
+    }
+    else if(dir == Direction::UP)
+    {
+        newPos = mPlayer->getAttribute<glm::uvec2>("position") + glm::uvec2(0, -1);
+    }
+    else if(dir == Direction::DOWN)
+    {
+        newPos = mPlayer->getAttribute<glm::uvec2>("position") + glm::uvec2(0, 1);
+    }
+
+    mPlayer->setAttribute("position", newPos);
+    mBus.send(PlayerPositionMessage(newPos));
 }
 
 bool Scene::isWallAt(uint32_t x, uint32_t y)
@@ -83,7 +115,6 @@ void Scene::processWallMaskImage(const sf::Image& wallMaskImage)
         {
             tempMask.at(i) = true;
         }
-        // 0,1,2,3,4
         else if(colour != sf::Color::Transparent)
         {
             if(colour == sf::Color::White)
