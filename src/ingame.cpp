@@ -17,12 +17,13 @@ InGameState::~InGameState()
 
 void InGameState::setup()
 {
-    mLevelLoader.load("levels/pack1/test");
-    mBus.send(SongPlayingMessage(true));
+    mLevelManager.loadLevelPack("levels/pack1");
 }
 
 void InGameState::activate(const std::string& previous)
 {
+    mLevelManager.reset();
+    nextLevel();
 }
 
 std::string InGameState::run()
@@ -34,4 +35,18 @@ std::string InGameState::run()
 void InGameState::handleMessage(const QuitMessage& message)
 {
     mNextState = "NONE";
+}
+
+void InGameState::nextLevel()
+{
+    if(mLevelManager.hasNext())
+    {
+        mLevelLoader.load(mLevelManager.next());
+        mBus.send(SongPlayingMessage(true));
+    }
+    else
+    {
+        //no more levels in the pack!
+        mNextState = "NONE";
+    }
 }

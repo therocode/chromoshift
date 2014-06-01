@@ -5,6 +5,7 @@
 #include "interface.hpp"
 #include "renderer.hpp"
 #include "levelloader.hpp"
+#include "levelmanager.hpp"
 #include <SFML/Graphics.hpp>
 
 class InGameState : 
@@ -19,11 +20,13 @@ class InGameState :
         std::string run() override;
         void handleMessage(const QuitMessage& message);
     private:
+        void nextLevel();
         fea::MessageBus& mBus;
         Scene mScene;
         Interface mInterface;
         Renderer mRenderer;
         LevelLoader mLevelLoader;
+        LevelManager mLevelManager;
 
         std::string mNextState;
 };
