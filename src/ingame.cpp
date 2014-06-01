@@ -9,12 +9,14 @@ InGameState::InGameState(fea::MessageBus& bus, sf::RenderWindow& w) :
 {
     mBus.addSubscriber<QuitMessage>(*this);
     mBus.addSubscriber<LevelAdvanceMessage>(*this);
+    mBus.addSubscriber<LevelRestartMessage>(*this);
 }
 
 InGameState::~InGameState()
 {
     mBus.removeSubscriber<QuitMessage>(*this);
     mBus.removeSubscriber<LevelAdvanceMessage>(*this);
+    mBus.removeSubscriber<LevelRestartMessage>(*this);
 }
 
 void InGameState::setup()
@@ -57,6 +59,11 @@ void InGameState::handleMessage(const LevelAdvanceMessage& message)
     }
 }
 
+void InGameState::handleMessage(const LevelRestartMessage& message)
+{
+    restartLevel();
+}
+
 void InGameState::nextLevel()
 {
     if(mLevelManager.hasNext())
@@ -73,4 +80,10 @@ void InGameState::previousLevel()
         mLevelLoader.load(mLevelManager.previous());
         mBus.send(SongPlayingMessage(true));
     }
+}
+
+void InGameState::restartLevel()
+{
+    mLevelLoader.load(mLevelManager.same());
+    mBus.send(SongPlayingMessage(true));
 }

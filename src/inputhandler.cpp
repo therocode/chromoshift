@@ -33,6 +33,8 @@ void InputHandler::process()
                 mBus.send(LevelAdvanceMessage(1));
             else if(event.key.code == sf::Keyboard::P)
                 mBus.send(LevelAdvanceMessage(-1));
+            else if(event.key.code == sf::Keyboard::R)
+                mBus.send(LevelRestartMessage());
         }
         else if(event.type == sf::Event::KeyReleased)
         {
