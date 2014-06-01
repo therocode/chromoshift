@@ -52,7 +52,6 @@ void Scene::handleMessage(const MoveMessage& mess)
 
     glm::uvec2 newPos;
     glm::uvec2 oldPos = mPlayer->getAttribute<glm::uvec2>("position");
-                                        // do boundary checking!
     if(dir == Direction::LEFT)
     {
         newPos = oldPos + glm::uvec2(-1, 0);
@@ -70,20 +69,20 @@ void Scene::handleMessage(const MoveMessage& mess)
         newPos = oldPos + glm::uvec2(0, 1);
     }
 
+    // pretto-ternary (boundary checking)
+    newPos = mWallMask.isWallAt(newPos) ? oldPos : newPos;
+
     mPlayer->setAttribute("position", newPos);
     mBus.send(PlayerPositionMessage(newPos));
 }
 
-bool Scene::isWallAt(glm::uvec2 pos)
-{
-    return mWallMask.isWallAt(pos);
-}
-
+/*  if necessary, make private
 bool Scene::isColourEntityAt(glm::uvec2 pos)
 {
     // stub
     return false;
 }
+*/
 
 void Scene::processWallMaskImage(const sf::Image& wallMaskImage)
 {
