@@ -61,38 +61,51 @@ void Scene::processWallMaskImage(const sf::Image& wallMaskImage)
     std::vector<bool> tempMask;
     tempMask.resize(imageSize, false);
 
+    sf::Color startColour;
+    sf::Color goalColour;
+
     for(uint32_t i = 0; i < imageSize; i++)
     {
         sf::Color colour = imageArray[i];
-        // first two must always be true as these are the player colour pixels
-        if(i == 0 || i == 1 ||
-            colour == sf::Color::Black)
+        // first two must always be walls as these are the player colour pixels
+        if(i == 0)
+        {
+            startColour = colour;
+            tempMask.at(i) = true;
+        }
+        else if(i == 1)
+        {
+            goalColour = colour;
+            tempMask.at(i) = true;
+        }
+        // setting the other walls
+        else if(colour == sf::Color::Black)
         {
             tempMask.at(i) = true;
         }
-        // also do colour entity stuff
         // 0,1,2,3,4
         else if(colour != sf::Color::Transparent)
         {
             if(colour == sf::Color::White)
             {
-                //player entity!
+                // player entity!
                 glm::uvec2 pos = glm::uvec2(i % wallMaskImage.getSize().x, i / wallMaskImage.getSize().x);
                 mPlayer->setAttribute("position", pos);
                 mBus.send(PlayerPositionMessage(pos));
 
-                glm::uvec3 col = glm::uvec3(colour.r, colour.g, colour.b);
+                glm::uvec3 col = glm::uvec3(startColour.r / 63, startColour.g / 63, startColour.b / 63);
                 mPlayer->setAttribute("colour", col);
                 mBus.send(PlayerColourMessage(col));
             }
             else
             {
+                // colour entities
                 fea::EntityPtr pickup = mFactory.instantiate("colour_pickup").lock();
 
                 glm::uvec2 pos = glm::uvec2(i % wallMaskImage.getSize().x, i / wallMaskImage.getSize().x);
                 pickup->setAttribute("position", pos);
 
-                glm::uvec3 col = glm::uvec3(colour.r, colour.g, colour.b);
+                glm::uvec3 col = glm::uvec3(colour.r / 63, colour.g / 63, colour.b / 63);
                 pickup->setAttribute("colour", col);
 
                 bool add = (colour.a == 255) ? true : false;
