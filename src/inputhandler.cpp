@@ -29,6 +29,10 @@ void InputHandler::process()
             else if(event.key.code == sf::Keyboard::S)
                 mBus.send(MoveMessage(DOWN));
                 //mDirectionsPressed[3] = true;
+            else if(event.key.code == sf::Keyboard::N)
+                mBus.send(LevelAdvanceMessage(1));
+            else if(event.key.code == sf::Keyboard::P)
+                mBus.send(LevelAdvanceMessage(-1));
         }
         else if(event.type == sf::Event::KeyReleased)
         {

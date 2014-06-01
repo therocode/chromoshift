@@ -8,21 +8,26 @@ InGameState::InGameState(fea::MessageBus& bus, sf::RenderWindow& w) :
     mLevelLoader(bus)
 {
     mBus.addSubscriber<QuitMessage>(*this);
+    mBus.addSubscriber<LevelAdvanceMessage>(*this);
 }
 
 InGameState::~InGameState()
 {
     mBus.removeSubscriber<QuitMessage>(*this);
+    mBus.removeSubscriber<LevelAdvanceMessage>(*this);
 }
 
 void InGameState::setup()
 {
-    mLevelLoader.load("levels/pack1/test");
-    mBus.send(SongPlayingMessage(true));
+    mLevelManager.loadLevelPack("levels/pack1");
 }
 
 void InGameState::activate(const std::string& previous)
 {
+    mLevelManager.reset();
+
+    mLevelLoader.load(mLevelManager.same());
+    mBus.send(SongPlayingMessage(true));
 }
 
 std::string InGameState::run()
@@ -34,4 +39,38 @@ std::string InGameState::run()
 void InGameState::handleMessage(const QuitMessage& message)
 {
     mNextState = "NONE";
+}
+
+void InGameState::handleMessage(const LevelAdvanceMessage& message)
+{
+    int32_t amount = std::get<0>(message.mData);
+
+    if(amount > 0)
+    {
+        for(int32_t i = 0; i < amount; i++)
+            nextLevel();
+    }
+    else if(amount < 0)
+    {
+        for(int32_t i = 0; i < abs(amount); i++)
+            previousLevel();
+    }
+}
+
+void InGameState::nextLevel()
+{
+    if(mLevelManager.hasNext())
+    {
+        mLevelLoader.load(mLevelManager.next());
+        mBus.send(SongPlayingMessage(true));
+    }
+}
+
+void InGameState::previousLevel()
+{
+    if(mLevelManager.hasPrevious())
+    {
+        mLevelLoader.load(mLevelManager.previous());
+        mBus.send(SongPlayingMessage(true));
+    }
 }

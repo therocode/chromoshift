@@ -42,7 +42,10 @@ void AudioPlayer::handleMessage(const SongPlayingMessage& message)
     bool playing = std::get<0>(message.mData);
 
     if(playing)
+    {
+        mSong.stop();
         mSong.play();
+    }
     else
         mSong.stop();
 }

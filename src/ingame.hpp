@@ -5,11 +5,13 @@
 #include "interface.hpp"
 #include "renderer.hpp"
 #include "levelloader.hpp"
+#include "levelmanager.hpp"
 #include <SFML/Graphics.hpp>
 
 class InGameState : 
     public fea::GameState,
-    public QuitMessageReceiver
+    public QuitMessageReceiver,
+    public LevelAdvanceMessageReceiver
 {
     public:
         InGameState(fea::MessageBus& bus, sf::RenderWindow& w);
@@ -18,12 +20,16 @@ class InGameState :
         void activate(const std::string& previous) override;
         std::string run() override;
         void handleMessage(const QuitMessage& message);
+        void handleMessage(const LevelAdvanceMessage& message);
     private:
+        void nextLevel();
+        void previousLevel();
         fea::MessageBus& mBus;
         Scene mScene;
         Interface mInterface;
         Renderer mRenderer;
         LevelLoader mLevelLoader;
+        LevelManager mLevelManager;
 
         std::string mNextState;
 };
