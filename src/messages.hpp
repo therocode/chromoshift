@@ -31,3 +31,5 @@ FEA_DECLARE_MESSAGE(ColourPickupCreatedMessage, size_t, const glm::uvec2&, const
 FEA_DECLARE_MESSAGE(ColourPickupRemovedMessage, size_t);
                                 // sound
 FEA_DECLARE_MESSAGE(SoundMessage, Sound);
+                                //      playing?
+FEA_DECLARE_MESSAGE(SongPlayingMessage, bool);

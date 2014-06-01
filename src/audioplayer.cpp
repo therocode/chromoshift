@@ -4,17 +4,22 @@ AudioPlayer::AudioPlayer(fea::MessageBus& bus) :
     mBus(bus)
 {
     mBus.addSubscriber<SoundMessage>(*this);
+    mBus.addSubscriber<SongPlayingMessage>(*this);
 
     mAdderBuf.loadFromFile("audio/adder.ogg");
     mSubberBuf.loadFromFile("audio/subber.ogg");
 
     mAdder.setBuffer(mAdderBuf);
     mSubber.setBuffer(mSubberBuf);
+
+    mSong.openFromFile("audio/song.ogg");
+    mSong.setLoop(true);
 }
 
 AudioPlayer::~AudioPlayer()
 {
     mBus.removeSubscriber<SoundMessage>(*this);
+    mBus.removeSubscriber<SongPlayingMessage>(*this);
 }
 
 void AudioPlayer::handleMessage(const SoundMessage& message)
@@ -30,4 +35,14 @@ void AudioPlayer::handleMessage(const SoundMessage& message)
             mSubber.play();
             break;
     }
+}
+
+void AudioPlayer::handleMessage(const SongPlayingMessage& message)
+{
+    bool playing = std::get<0>(message.mData);
+
+    if(playing)
+        mSong.play();
+    else
+        mSong.stop();
 }

@@ -18,6 +18,7 @@ InGameState::~InGameState()
 void InGameState::setup()
 {
     mLevelLoader.load("levels/pack1/test");
+    mBus.send(SongPlayingMessage(true));
 }
 
 void InGameState::activate(const std::string& previous)
