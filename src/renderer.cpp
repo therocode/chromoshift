@@ -23,7 +23,7 @@ Renderer::Renderer(fea::MessageBus& b, sf::RenderWindow& w) :
     mBus(b),
     mWindow(w),
     mTileSize({30.0f, 30.0f}),
-    mInterfacePosition({0.0f, 0.0f})
+    mInterfacePosition({0.0f, 500.0f})
 {
     mBus.addSubscriber<BGMessage>(*this);
     mBus.addSubscriber<ResizeMessage>(*this);
@@ -40,10 +40,15 @@ Renderer::Renderer(fea::MessageBus& b, sf::RenderWindow& w) :
     mInterfaceTexture.loadFromFile("textures/rgb.png");
     mInterfaceSprite.setTexture(mInterfaceTexture);
     mInterfaceSprite.setScale({5.0f, 5.0f});
+    mInterfaceSprite.setPosition({mInterfacePosition.x, mInterfacePosition.y});
 
     mInterfaceOverlayTexture.loadFromFile("textures/rgb-overlay.png");
     mInterfaceOverlaySprite.setTexture(mInterfaceOverlayTexture);
     mInterfaceOverlaySprite.setScale({5.0f, 5.0f});
+    mInterfaceOverlaySprite.setPosition({mInterfacePosition.x, mInterfacePosition.y});
+
+    mSceneView.reset({0, 0, 800, 600});
+    mInterfaceView.reset({0, 0, 800, 600});
 }
 
 Renderer::~Renderer()
@@ -70,9 +75,8 @@ void Renderer::handleMessage(const ResizeMessage& message)
 {
     glm::uvec2 screenSize;
     std::tie(screenSize) = message.mData;
-    sf::View view = mWindow.getView();
-    view.setSize(screenSize.x, screenSize.y);
-    mWindow.setView(view);
+    mSceneView.setSize(screenSize.x, screenSize.y);
+    mInterfaceView.setSize(screenSize.x, screenSize.y);
 }
 
 void Renderer::handleMessage(const PlayerPositionMessage& message)
@@ -83,9 +87,7 @@ void Renderer::handleMessage(const PlayerPositionMessage& message)
 
     mPlayer.setPosition({position.x * mTileSize.x, position.y * mTileSize.y});
     
-    sf::View view = mWindow.getView();
-    view.setCenter(position.x * mTileSize.x, position.y * mTileSize.y);
-    mWindow.setView(view);
+    mSceneView.setCenter(position.x * mTileSize.x, position.y * mTileSize.y);
 }
 
 void Renderer::handleMessage(const GoalColourMessage& message)
@@ -96,7 +98,6 @@ void Renderer::handleMessage(const GoalColourMessage& message)
     for(uint32_t i = 0; i < mGoalColour.r; i++)   //r
     {
         sf::RectangleShape rect;
-        glm::uvec2 mInterfacePosition;
         rect.setPosition({mInterfacePosition.x + (mTileSize.x * (i + 2)), mInterfacePosition.y + (mTileSize.y * 0)});
         rect.setSize({mTileSize.x, mTileSize.y});
         rect.setFillColor(sf::Color(255, 120, 120));
@@ -105,7 +106,6 @@ void Renderer::handleMessage(const GoalColourMessage& message)
     for(uint32_t i = 0; i < mGoalColour.g; i++)   //g
     {
         sf::RectangleShape rect;
-        glm::uvec2 mInterfacePosition;
         rect.setPosition({mInterfacePosition.x + (mTileSize.x * (i + 2)), mInterfacePosition.y + (mTileSize.y * 1)});
         rect.setSize({mTileSize.x, mTileSize.y});
         rect.setFillColor(sf::Color(120, 255, 120));
@@ -114,7 +114,6 @@ void Renderer::handleMessage(const GoalColourMessage& message)
     for(uint32_t i = 0; i < mGoalColour.b; i++)   //b
     {
         sf::RectangleShape rect;
-        glm::uvec2 mInterfacePosition;
         rect.setPosition({mInterfacePosition.x + (mTileSize.x * (i + 2)), mInterfacePosition.y + (mTileSize.y * 2)});
         rect.setSize({mTileSize.x, mTileSize.y});
         rect.setFillColor(sf::Color(120, 120, 255));
@@ -132,7 +131,6 @@ void Renderer::handleMessage(const PlayerColourMessage& message)
     for(uint32_t i = 0; i < mPlayerColour.r; i++)   //r
     {
         sf::RectangleShape rect;
-        glm::uvec2 mInterfacePosition;
         rect.setPosition({mInterfacePosition.x + (mTileSize.x * (i + 2)), mInterfacePosition.y + (mTileSize.y * 0)});
         rect.setSize({mTileSize.x, mTileSize.y});
         rect.setFillColor(sf::Color(255, 0, 0));
@@ -141,7 +139,6 @@ void Renderer::handleMessage(const PlayerColourMessage& message)
     for(uint32_t i = 0; i < mPlayerColour.g; i++)   //g
     {
         sf::RectangleShape rect;
-        glm::uvec2 mInterfacePosition;
         rect.setPosition({mInterfacePosition.x + (mTileSize.x * (i + 2)), mInterfacePosition.y + (mTileSize.y * 1)});
         rect.setSize({mTileSize.x, mTileSize.y});
         rect.setFillColor(sf::Color(0, 255, 0));
@@ -150,7 +147,6 @@ void Renderer::handleMessage(const PlayerColourMessage& message)
     for(uint32_t i = 0; i < mPlayerColour.b; i++)   //b
     {
         sf::RectangleShape rect;
-        glm::uvec2 mInterfacePosition;
         rect.setPosition({mInterfacePosition.x + (mTileSize.x * (i + 2)), mInterfacePosition.y + (mTileSize.y * 2)});
         rect.setSize({mTileSize.x, mTileSize.y});
         rect.setFillColor(sf::Color(0, 0, 255));
@@ -182,18 +178,22 @@ void Renderer::handleMessage(const ColourPickupRemovedMessage& message)
 void Renderer::render()
 {
     mWindow.clear();
-    mWindow.draw(mBackground);
 
+    // scene //
+    mWindow.setView(mSceneView);
+
+    mWindow.draw(mBackground);
     for(auto& pickup : mPickups)
     {
         mWindow.draw(pickup.second.rectangle);
         mWindow.draw(pickup.second.overlay);
         pickup.second.tick();
     }
-
     mWindow.draw(mPlayer);
 
     // interface //
+    mWindow.setView(mInterfaceView);
+
     mWindow.draw(mInterfaceSprite);
     mWindow.draw(mInterfaceOverlaySprite);
     for(auto& rect : mGoalColourMeter)

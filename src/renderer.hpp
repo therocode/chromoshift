@@ -43,6 +43,7 @@ class Renderer :
         glm::vec2 mTileSize;
 
         // scene stuff //
+        sf::View mSceneView;
         sf::Texture mBgTexture;
         sf::Sprite mBackground;
 
@@ -52,6 +53,7 @@ class Renderer :
         std::unordered_map<size_t, Pickup> mPickups;
 
         // interface stuff //
+        sf::View mInterfaceView;
         sf::Texture mInterfaceTexture;
         sf::Texture mInterfaceOverlayTexture;
         sf::Sprite mInterfaceSprite;
