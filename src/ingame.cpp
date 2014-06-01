@@ -3,6 +3,7 @@
 InGameState::InGameState(fea::MessageBus& bus, sf::RenderWindow& w) : 
     mBus(bus),
     mScene(bus),
+    mInterface(bus),
     mRenderer(bus, w),
     mLevelLoader(bus)
 {

@@ -4,8 +4,8 @@
 #include <fea/util/entity/basictypeadder.hpp>
 #include <glm/glm.hpp>
 
-Scene::Scene(fea::MessageBus& bus)
-  : mBus(bus),
+Scene::Scene(fea::MessageBus& bus) :
+    mBus(bus),
     mFactory(mManager)
 {
     mBus.addSubscriber<MaskMessage>(*this);
@@ -129,7 +129,6 @@ void Scene::processWallMaskImage(const sf::Image& wallMaskImage)
     tempMask.resize(imageSize, false);
 
     sf::Color startColour;
-    sf::Color goalColour;
 
     for(uint32_t i = 0; i < imageSize; i++)
     {
@@ -142,7 +141,7 @@ void Scene::processWallMaskImage(const sf::Image& wallMaskImage)
         }
         else if(i == 1)
         {
-            goalColour = colour;
+            mBus.send(GoalColourMessage(SFToGlmColour(colour)));
             tempMask.at(i) = true;
         }
         // setting the other walls

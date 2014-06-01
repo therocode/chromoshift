@@ -1,11 +1,16 @@
 #pragma once
-#include "messages.h"
+#include "messages.hpp"
 
-class Interface
+class Interface :
+    public fea::MessageReceiver<PlayerColourMessage>,
+    public fea::MessageReceiver<GoalColourMessage>
 {
     public:
-        Interface(const fea::MessageBus& bus);
+        Interface(fea::MessageBus& bus);
         ~Interface();
+
+        virtual void handleMessage(const PlayerColourMessage& message) override;
+        virtual void handleMessage(const GoalColourMessage& message) override;
 
     private:
         fea::MessageBus& mBus;

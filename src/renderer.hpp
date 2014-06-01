@@ -18,6 +18,7 @@ class Renderer :
     public BGMessageReceiver,
     public ResizeMessageReceiver,
     public PlayerPositionMessageReceiver,
+    public GoalColourMessageReceiver,
     public PlayerColourMessageReceiver,
     public ColourPickupCreatedMessageReceiver,
     public ColourPickupRemovedMessageReceiver
@@ -28,6 +29,7 @@ class Renderer :
         virtual void handleMessage(const BGMessage& message) override;
         virtual void handleMessage(const ResizeMessage& message) override;
         virtual void handleMessage(const PlayerPositionMessage& message) override;
+        virtual void handleMessage(const GoalColourMessage& message) override;
         virtual void handleMessage(const PlayerColourMessage& message) override;
         virtual void handleMessage(const ColourPickupCreatedMessage& message) override;
         virtual void handleMessage(const ColourPickupRemovedMessage& message) override;
@@ -38,6 +40,9 @@ class Renderer :
         fea::MessageBus& mBus;
         sf::RenderWindow& mWindow;
 
+        glm::vec2 tileSize;
+
+        // scene stuff //
         sf::Texture mBgTexture;
         sf::Sprite mBackground;
 
@@ -45,4 +50,11 @@ class Renderer :
 
         sf::Texture mPickupTexture;
         std::unordered_map<size_t, Pickup> mPickups;
+
+        // interface stuff //
+        glm::uvec2 mInterfacePosition;
+        glm::uvec3 mGoalColour;
+        glm::uvec3 mPlayerColour;
+        std::vector<sf::RectangleShape> mGoalColourMeter;
+        std::vector<sf::RectangleShape> mPlayerColourMeter;
 };

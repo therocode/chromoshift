@@ -2,6 +2,7 @@
 #include <fea/structure.hpp>
 #include "messages.hpp"
 #include "scene.hpp"
+#include "interface.hpp"
 #include "renderer.hpp"
 #include "levelloader.hpp"
 #include <SFML/Graphics.hpp>
@@ -20,6 +21,7 @@ class InGameState :
     private:
         fea::MessageBus& mBus;
         Scene mScene;
+        Interface mInterface;
         Renderer mRenderer;
         LevelLoader mLevelLoader;
 

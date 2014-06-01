@@ -21,20 +21,20 @@ void Pickup::tick()
 
 Renderer::Renderer(fea::MessageBus& b, sf::RenderWindow& w) :
     mBus(b),
-    mWindow(w)
+    mWindow(w),
+    tileSize({tileSize.x, tileSize.y})
 {
     mBus.addSubscriber<BGMessage>(*this);
     mBus.addSubscriber<ResizeMessage>(*this);
     mBus.addSubscriber<PlayerPositionMessage>(*this);
+    mBus.addSubscriber<GoalColourMessage>(*this);
     mBus.addSubscriber<PlayerColourMessage>(*this);
     mBus.addSubscriber<ColourPickupCreatedMessage>(*this);
     mBus.addSubscriber<ColourPickupRemovedMessage>(*this);
 
-    mPlayer.setSize({30.0f, 30.0f});
+    mPlayer.setSize({tileSize.x, tileSize.y});
 
     mPickupTexture.loadFromFile("textures/addsub.png");
-
-    createPickup({5,5}, {2,5,3}, true);
 }
 
 Renderer::~Renderer()
@@ -42,6 +42,7 @@ Renderer::~Renderer()
     mBus.removeSubscriber<BGMessage>(*this);
     mBus.removeSubscriber<ResizeMessage>(*this);
     mBus.removeSubscriber<PlayerPositionMessage>(*this);
+    mBus.removeSubscriber<GoalColourMessage>(*this);
     mBus.removeSubscriber<PlayerColourMessage>(*this);
     mBus.removeSubscriber<ColourPickupCreatedMessage>(*this);
     mBus.removeSubscriber<ColourPickupRemovedMessage>(*this);
@@ -53,7 +54,7 @@ void Renderer::handleMessage(const BGMessage& message)
 
     mBgTexture.loadFromImage(image);
     mBackground.setTexture(mBgTexture);
-    mBackground.setScale(30.0f, 30.0f);
+    mBackground.setScale(tileSize.x, tileSize.y);
 }
 
 void Renderer::handleMessage(const ResizeMessage& message)
@@ -71,18 +72,29 @@ void Renderer::handleMessage(const PlayerPositionMessage& message)
 
     std::tie(position) = message.mData;
 
-    mPlayer.setPosition({position.x * 30.0f, position.y * 30.0f});
+    mPlayer.setPosition({position.x * tileSize.x, position.y * tileSize.y});
     
     sf::View view = mWindow.getView();
-    view.setCenter(position.x * 30.0f, position.y * 30.0f);
+    view.setCenter(position.x * tileSize.x, position.y * tileSize.y);
     mWindow.setView(view);
+}
+
+void Renderer::handleMessage(const GoalColourMessage& message)
+{
+    mGoalColour = std::get<0>(message.mData);
 }
 
 void Renderer::handleMessage(const PlayerColourMessage& message)
 {
-    const glm::uvec3& color = std::get<0>(message.mData);
+    mPlayerColour = std::get<0>(message.mData);
 
-    mPlayer.setFillColor(glmToSFColour(color));
+    mPlayer.setFillColor(glmToSFColour(mPlayerColour));
+
+    mPlayerColourMeter.clear();
+    for(uint32_t i = 0; i < mGoalColour.r; i++)
+    {
+        //sf::RectangleShape
+    }
 }
 
 void Renderer::handleMessage(const ColourPickupCreatedMessage& message)
@@ -119,16 +131,22 @@ void Renderer::render()
     }
 
     mWindow.draw(mPlayer);
+
+    /*
+    mWindow.draw(mInterfaceBackground);
+    mWindow.draw(mGoalColours);
+    mWindow.draw(mPlayerColours);
+    */
 }
 
 Pickup Renderer::createPickup(const glm::uvec2& position, const glm::uvec3& color, bool additive)
 {
     Pickup pickup;
 
-    pickup.rectangle.setPosition({position.x * 30.0f, position.y * 30.0f});
-    pickup.rectangle.setSize({30.0f, 30.0f});
+    pickup.rectangle.setPosition({position.x * tileSize.x, position.y * tileSize.y});
+    pickup.rectangle.setSize({tileSize.x, tileSize.y});
     pickup.rectangle.setFillColor(glmToSFColour(color));
-    pickup.overlay.setPosition({position.x * 30.0f, position.y * 30.0f});
+    pickup.overlay.setPosition({position.x * tileSize.x, position.y * tileSize.y});
     pickup.overlay.setTexture(mPickupTexture);
     pickup.overlay.setTextureRect({additive ? 0 : 6, 0, 6, 6});
     pickup.overlay.setScale({5.0f, 5.0f});

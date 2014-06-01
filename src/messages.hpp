@@ -18,6 +18,8 @@ FEA_DECLARE_MESSAGE(BGMessage, const sf::Image&);
 FEA_DECLARE_MESSAGE(MaskMessage, const sf::Image&);
                                 // screen size
 FEA_DECLARE_MESSAGE(ResizeMessage, const glm::uvec2&);
+                                //     colour
+FEA_DECLARE_MESSAGE(GoalColourMessage, const glm::uvec3&);
                                 //         position
 FEA_DECLARE_MESSAGE(PlayerPositionMessage, const glm::uvec2&);
                                 //       colour

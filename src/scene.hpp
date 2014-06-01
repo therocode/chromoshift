@@ -4,8 +4,8 @@
 #include "messages.hpp"
 #include "wallmask.hpp"
 
-class Scene
-  : public fea::MessageReceiver<MaskMessage>,
+class Scene :
+    public fea::MessageReceiver<MaskMessage>,
     public fea::MessageReceiver<MoveMessage>
 {
     public:
