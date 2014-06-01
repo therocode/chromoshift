@@ -11,27 +11,27 @@ namespace sf
 }
 
 FEA_DECLARE_MESSAGE(QuitMessage);
-                                // enum direction
+//                               enum direction
 FEA_DECLARE_MESSAGE(MoveMessage, Direction);
-                                // bg image
+//                               bg image
 FEA_DECLARE_MESSAGE(BGMessage, const sf::Image&);
-                                // mask image
+//                               mask image
 FEA_DECLARE_MESSAGE(MaskMessage, const sf::Image&);
-                                // screen size
+//                                 screen size
 FEA_DECLARE_MESSAGE(ResizeMessage, const glm::uvec2&);
-                                //     colour
+//                                     colour
 FEA_DECLARE_MESSAGE(GoalColourMessage, const glm::uvec3&);
-                                //         position
+//                                         position
 FEA_DECLARE_MESSAGE(PlayerPositionMessage, const glm::uvec2&);
-                                //       colour
+//                                       colour
 FEA_DECLARE_MESSAGE(PlayerColourMessage, const glm::uvec3&);
-                                //              id,     position           colour             additive
+//                                              id,     position           colour             additive
 FEA_DECLARE_MESSAGE(ColourPickupCreatedMessage, size_t, const glm::uvec2&, const glm::uvec3&, bool);
-                                //              id
+//                                              id
 FEA_DECLARE_MESSAGE(ColourPickupRemovedMessage, size_t);
-                                // sound
+//                                sound
 FEA_DECLARE_MESSAGE(SoundMessage, Sound);
-                                //      playing?
+//                                      playing?
 FEA_DECLARE_MESSAGE(SongPlayingMessage, bool);
-                                //       amount
+//                                       amount
 FEA_DECLARE_MESSAGE(LevelAdvanceMessage, int32_t);
