@@ -24,3 +24,5 @@ FEA_DECLARE_MESSAGE(PlayerPositionMessage, const glm::uvec2&);
 FEA_DECLARE_MESSAGE(PlayerColourMessage, const glm::uvec3&);
                                 //              id,     position           colour             additive
 FEA_DECLARE_MESSAGE(ColourPickupCreatedMessage, size_t, const glm::uvec2&, const glm::uvec3&, bool);
+                                //              id
+FEA_DECLARE_MESSAGE(ColourPickupRemovedMessage, size_t);

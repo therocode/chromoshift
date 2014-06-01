@@ -9,7 +9,7 @@ Renderer::Renderer(fea::MessageBus& b, sf::RenderWindow& w) :
     mBus.addSubscriber<PlayerPositionMessage>(*this);
     mBus.addSubscriber<PlayerColourMessage>(*this);
     mBus.addSubscriber<ColourPickupCreatedMessage>(*this);
-    mBus.addSubscriber<ColourPickupRemoved>(*this);
+    mBus.addSubscriber<ColourPickupRemovedMessage>(*this);
 
     mPlayer.setSize({30.0f, 30.0f});
 
@@ -25,7 +25,7 @@ Renderer::~Renderer()
     mBus.removeSubscriber<PlayerPositionMessage>(*this);
     mBus.removeSubscriber<PlayerColourMessage>(*this);
     mBus.removeSubscriber<ColourPickupCreatedMessage>(*this);
-    mBus.removeSubscriber<ColourPickupRemoved>(*this);
+    mBus.removeSubscriber<ColourPickupRemovedMessage>(*this);
 }
 
 void Renderer::handleMessage(const BGMessage& message)

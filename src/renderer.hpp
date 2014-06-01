@@ -14,7 +14,7 @@ class Renderer :
     public ResizeMessageReceiver,
     public PlayerPositionMessageReceiver,
     public PlayerColourMessageReceiver,
-    public ColourPickupCreatedMessageReceiver
+    public ColourPickupCreatedMessageReceiver,
     public ColourPickupRemovedMessageReceiver
 {
     public:
