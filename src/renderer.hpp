@@ -15,6 +15,7 @@ class Renderer :
     public PlayerPositionMessageReceiver,
     public PlayerColorMessageReceiver,
     public ColourPickupCreatedMessageReceiver
+    public ColourPickupRemovedMessageReceiver
 {
     public:
         Renderer(fea::MessageBus& b, sf::RenderWindow& w);
@@ -24,6 +25,7 @@ class Renderer :
         virtual void handleMessage(const PlayerPositionMessage& message) override;
         virtual void handleMessage(const PlayerColorMessage& message) override;
         virtual void handleMessage(const ColourPickupCreatedMessage& message) override;
+        virtual void handleMessage(const ColourPickupRemovedMessage& message) override;
         void render();
     private:
         void createPickup(const glm::uvec2& position, const glm::uvec3& color, bool additive);
