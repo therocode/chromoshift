@@ -12,8 +12,8 @@ class Scene
         Scene(fea::MessageBus& bus);
         ~Scene();
 
-        bool isWallAt(uint32_t x, uint32_t y);
-        bool isColourEntityAt(uint32_t x, uint32_t y);
+        bool isWallAt(glm::uvec2 pos);
+        bool isColourEntityAt(glm::uvec2 pos);
 
         void handleMessage(const MaskMessage& mess);
         void handleMessage(const MoveMessage& mess);

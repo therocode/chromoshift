@@ -51,35 +51,35 @@ void Scene::handleMessage(const MoveMessage& mess)
     std::tie(dir) = mess.mData;
 
     glm::uvec2 newPos;
-
+    glm::uvec2 oldPos = mPlayer->getAttribute<glm::uvec2>("position");
                                         // do boundary checking!
     if(dir == Direction::LEFT)
     {
-        newPos = mPlayer->getAttribute<glm::uvec2>("position") + glm::uvec2(-1, 0);
+        newPos = oldPos + glm::uvec2(-1, 0);
     }
     else if(dir == Direction::RIGHT)
     {
-        newPos = mPlayer->getAttribute<glm::uvec2>("position") + glm::uvec2(1, 0);
+        newPos = oldPos + glm::uvec2(1, 0);
     }
     else if(dir == Direction::UP)
     {
-        newPos = mPlayer->getAttribute<glm::uvec2>("position") + glm::uvec2(0, -1);
+        newPos = oldPos + glm::uvec2(0, -1);
     }
     else if(dir == Direction::DOWN)
     {
-        newPos = mPlayer->getAttribute<glm::uvec2>("position") + glm::uvec2(0, 1);
+        newPos = oldPos + glm::uvec2(0, 1);
     }
 
     mPlayer->setAttribute("position", newPos);
     mBus.send(PlayerPositionMessage(newPos));
 }
 
-bool Scene::isWallAt(uint32_t x, uint32_t y)
+bool Scene::isWallAt(glm::uvec2 pos)
 {
-    return mWallMask.isWallAt(x, y);
+    return mWallMask.isWallAt(pos);
 }
 
-bool Scene::isColourEntityAt(uint32_t x, uint32_t y)
+bool Scene::isColourEntityAt(glm::uvec2 pos)
 {
     // stub
     return false;
