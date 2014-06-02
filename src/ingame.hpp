@@ -12,7 +12,9 @@ class InGameState :
     public fea::GameState,
     public QuitMessageReceiver,
     public LevelAdvanceMessageReceiver,
-    public LevelRestartMessageReceiver
+    public LevelRestartMessageReceiver,
+    public LevelSolvedMessageReceiver,
+    public PlayerDiedMessageReceiver
 {
     public:
         InGameState(fea::MessageBus& bus, sf::RenderWindow& w);
@@ -23,6 +25,8 @@ class InGameState :
         void handleMessage(const QuitMessage& message) override;
         void handleMessage(const LevelAdvanceMessage& message) override;
         void handleMessage(const LevelRestartMessage& message) override;
+        void handleMessage(const LevelSolvedMessage& message) override;
+        void handleMessage(const PlayerDiedMessage& message) override;
     private:
         void nextLevel();
         void previousLevel();
@@ -33,6 +37,9 @@ class InGameState :
         Renderer mRenderer;
         LevelLoader mLevelLoader;
         LevelManager mLevelManager;
+
+        bool isDead;
+        bool isSolved;
 
         std::string mNextState;
 };
