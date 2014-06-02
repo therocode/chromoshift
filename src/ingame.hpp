@@ -20,9 +20,9 @@ class InGameState :
         void setup() override;
         void activate(const std::string& previous) override;
         std::string run() override;
-        void handleMessage(const QuitMessage& message);
-        void handleMessage(const LevelAdvanceMessage& message);
-        void handleMessage(const LevelRestartMessage& message);
+        void handleMessage(const QuitMessage& message) override;
+        void handleMessage(const LevelAdvanceMessage& message) override;
+        void handleMessage(const LevelRestartMessage& message) override;
     private:
         void nextLevel();
         void previousLevel();
