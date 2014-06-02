@@ -29,14 +29,14 @@ class Renderer :
     public:
         Renderer(fea::MessageBus& b, sf::RenderWindow& w);
         ~Renderer();
-        virtual void handleMessage(const BGMessage& message) override;
-        virtual void handleMessage(const ResizeMessage& message) override;
-        virtual void handleMessage(const PlayerPositionMessage& message) override;
-        virtual void handleMessage(const GoalColourMessage& message) override;
-        virtual void handleMessage(const PlayerColourMessage& message) override;
-        virtual void handleMessage(const ColourPickupCreatedMessage& message) override;
-        virtual void handleMessage(const ColourPickupRemovedMessage& message) override;
-        virtual void handleMessage(const BackgroundColourMessage& message) override;
+        void handleMessage(const BGMessage& message) override;
+        void handleMessage(const ResizeMessage& message) override;
+        void handleMessage(const PlayerPositionMessage& message) override;
+        void handleMessage(const GoalColourMessage& message) override;
+        void handleMessage(const PlayerColourMessage& message) override;
+        void handleMessage(const ColourPickupCreatedMessage& message) override;
+        void handleMessage(const ColourPickupRemovedMessage& message) override;
+        void handleMessage(const BackgroundColourMessage& message) override;
         void handleMessage(const PlayerDiedMessage& message) override;
         void render();
     private:

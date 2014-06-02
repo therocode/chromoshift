@@ -15,6 +15,7 @@ void InputHandler::process()
     {
         if(event.type == sf::Event::KeyPressed)
         {
+            mBus.send(AnyKeyPressedMessage());
             if(event.key.code == sf::Keyboard::Q)
                 mBus.send(QuitMessage());
             else if(event.key.code == sf::Keyboard::A)

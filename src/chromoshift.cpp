@@ -1,5 +1,6 @@
 #include "chromoshift.hpp"
 #include "ingame.hpp"
+#include "menu.hpp"
 
 ChromoShift::ChromoShift() :
     mInputHandler(mBus, mWindow),
@@ -13,7 +14,8 @@ void ChromoShift::setup(const std::vector<std::string>& args)
     mWindow.setFramerateLimit(60);
 
     mStateMachine.addGameState("ingame", std::unique_ptr<InGameState>(new InGameState(mBus, mWindow)));
-    mStateMachine.setCurrentState("ingame");
+    mStateMachine.addGameState("menu", std::unique_ptr<MenuState>(new MenuState(mBus, mWindow)));
+    mStateMachine.setCurrentState("menu");
 }
 
 void ChromoShift::destroy()
