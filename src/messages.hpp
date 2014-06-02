@@ -34,7 +34,7 @@ FEA_DECLARE_MESSAGE(SoundMessage, Sound);
 //                                      playing?
 FEA_DECLARE_MESSAGE(SongPlayingMessage, bool);
 //
-FEA_DECLARE_MESSAGE(PlayerDiedMessage, const glm::ivec3);
+FEA_DECLARE_MESSAGE(PlayerDiedMessage, const glm::ivec3&);
 //
 FEA_DECLARE_MESSAGE(LevelSolvedMessage);
 //                                       amount

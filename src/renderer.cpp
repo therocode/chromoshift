@@ -41,6 +41,7 @@ Renderer::Renderer(fea::MessageBus& b, sf::RenderWindow& w) :
     mBus.addSubscriber<ColourPickupCreatedMessage>(*this);
     mBus.addSubscriber<ColourPickupRemovedMessage>(*this);
     mBus.addSubscriber<BackgroundColourMessage>(*this);
+    mBus.addSubscriber<PlayerDiedMessage>(*this);
 
     mPlayer.setSize({mTileSize.x, mTileSize.y});
 
@@ -70,6 +71,7 @@ Renderer::~Renderer()
     mBus.removeSubscriber<ColourPickupCreatedMessage>(*this);
     mBus.removeSubscriber<ColourPickupRemovedMessage>(*this);
     mBus.removeSubscriber<BackgroundColourMessage>(*this);
+    mBus.removeSubscriber<PlayerDiedMessage>(*this);
 }
 
 void Renderer::handleMessage(const BGMessage& message)

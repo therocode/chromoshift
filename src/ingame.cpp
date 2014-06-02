@@ -40,11 +40,11 @@ void InGameState::activate(const std::string& previous)
 
 std::string InGameState::run()
 {
-    if(isDead)
-    {
-        restartLevel();
-        isDead = false;
-    }
+    //if(isDead)
+    //{
+    //    restartLevel();
+    //    isDead = false;
+    //}
     if(isSolved)
     {
         nextLevel();

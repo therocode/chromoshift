@@ -6,7 +6,8 @@
 
 Scene::Scene(fea::MessageBus& bus) :
     mBus(bus),
-    mFactory(mManager)
+    mFactory(mManager),
+    mIsDead(true)
 {
     mBus.addSubscriber<MaskMessage>(*this);
     mBus.addSubscriber<MoveMessage>(*this);
@@ -42,11 +43,15 @@ Scene::~Scene()
 
 void Scene::handleMessage(const MaskMessage& mess)
 {
+    mIsDead = false;
     processWallMaskImage(std::get<0>(mess.mData));
 }
 
 void Scene::handleMessage(const MoveMessage& mess)
 {
+    if(mIsDead)
+        return;
+
     Direction dir;
     std::tie(dir) = mess.mData;
 
@@ -91,7 +96,12 @@ void Scene::handleMessage(const MoveMessage& mess)
         //check for dying
         if(playerColour.r > 4 || playerColour.g > 4 || playerColour.b > 4)
         {
-            mBus.send(PlayerDiedMessage());
+            glm::ivec3 dieReason((playerColour.r > 5000 ? -1 : 0) + (playerColour.r > 4 && playerColour.r <= 5000 ? 1 : 0),
+                                (playerColour.g > 5000 ? -1 : 0) + (playerColour.g > 4 &&  playerColour.g <= 5000 ? 1 : 0),
+                                (playerColour.b > 5000 ? -1 : 0) + (playerColour.b > 4 &&  playerColour.b <= 5000 ? 1 : 0));
+
+            mBus.send(PlayerDiedMessage(dieReason));
+            mIsDead = true;
         }
 
         playerColour.r = std::min(4, std::max(0, (int32_t)playerColour.r));
