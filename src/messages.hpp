@@ -4,9 +4,9 @@
 #include "direction.hpp"
 #include "sounds.hpp"
 
-namespace sf
+namespace fea
 {
-    class Image;
+    class Texture;
     class Color;
 }
 
@@ -14,9 +14,9 @@ FEA_DECLARE_MESSAGE(QuitMessage);
 //                               enum direction
 FEA_DECLARE_MESSAGE(MoveMessage, Direction);
 //                               bg image
-FEA_DECLARE_MESSAGE(BGMessage, const sf::Image&);
+FEA_DECLARE_MESSAGE(BGMessage, fea::Texture&);
 //                               mask image
-FEA_DECLARE_MESSAGE(MaskMessage, const sf::Image&);
+FEA_DECLARE_MESSAGE(MaskMessage, const fea::Texture&);
 //                                 screen size
 FEA_DECLARE_MESSAGE(ResizeMessage, const glm::uvec2&);
 //                                     colour
@@ -42,6 +42,6 @@ FEA_DECLARE_MESSAGE(LevelAdvanceMessage, int32_t);
 //                                       
 FEA_DECLARE_MESSAGE(LevelRestartMessage);
 //                                           colour
-FEA_DECLARE_MESSAGE(BackgroundColourMessage, const sf::Color&);
+FEA_DECLARE_MESSAGE(BackgroundColourMessage, const fea::Color&);
 //
 FEA_DECLARE_MESSAGE(AnyKeyPressedMessage);

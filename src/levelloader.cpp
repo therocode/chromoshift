@@ -1,5 +1,5 @@
 #include "levelloader.hpp"
-#include <SFML/Graphics.hpp>
+#include "texturemaker.hpp"
         
 LevelLoader::LevelLoader(fea::MessageBus& bus) :
     mBus(bus)
@@ -11,14 +11,11 @@ void LevelLoader::load(const std::string& path)
     std::string bgPath = path + "_img.png";
     std::string maskPath = path + "_mask.png";
 
-    sf::Image bgImage;
-    bgImage.loadFromFile(bgPath);
+    fea::Texture bgImage;
+    bgImage = makeTexture(bgPath);
 
-    sf::Image maskImage;
-    maskImage.loadFromFile(maskPath);
-
-    mBus.send(BGMessage(bgImage));
-    mBus.send(MaskMessage(maskImage));
+    fea::Texture maskImage;
+    maskImage = makeTexture(maskPath);
 
     glm::ivec3 accumulator;
     int32_t accumulatorAmount = 0;
@@ -29,20 +26,23 @@ void LevelLoader::load(const std::string& path)
         {
             if(x == 0 || y == 0 || x == bgImage.getSize().x - 1 || y == bgImage.getSize().y)
             {
-                sf::Color colour = bgImage.getPixel(x, y);
-                accumulator.r += colour.r;
-                accumulator.g += colour.g;
-                accumulator.b += colour.b;
+                fea::Color colour = bgImage.getPixel(x, y);
+                accumulator.r += colour.rAsByte();
+                accumulator.g += colour.gAsByte();
+                accumulator.b += colour.bAsByte();
                 accumulatorAmount++;
             }
         }
     }
 
-    sf::Color average;
+    fea::Color average;
 
-    average.r = accumulator.r / accumulatorAmount;
-    average.g = accumulator.g / accumulatorAmount;
-    average.b = accumulator.b / accumulatorAmount;
+    average.setRAsByte(accumulator.r / accumulatorAmount);
+    average.setGAsByte(accumulator.g / accumulatorAmount);
+    average.setBAsByte(accumulator.b / accumulatorAmount);
+
+    mBus.send(BGMessage(bgImage));
+    mBus.send(MaskMessage(maskImage));
 
     mBus.send(BackgroundColourMessage(average));
 }

@@ -1,6 +1,6 @@
 #pragma once
-#include <SFML/Graphics.hpp>
 #include <fea/entitysystem.hpp>
+#include <fea/render2d.hpp>
 #include "messages.hpp"
 #include "wallmask.hpp"
 
@@ -25,8 +25,8 @@ class Scene :
         WallMask mWallMask;
         glm::uvec3 mGoalColour;
 
-        void processWallMaskImage(const sf::Image& wallMaskImage);
-        glm::uvec3 SFToGlmColour(const sf::Color& colour);
+        void processWallMaskImage(const fea::Texture& wallMaskImage);
+        glm::uvec3 SFToGlmColour(const fea::Color& colour);
         fea::EntityPtr colourPickupAtPosition(const glm::uvec2& pos);
         void removeColourPickup(size_t id);
 

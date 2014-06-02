@@ -1,58 +1,58 @@
 #include "inputhandler.hpp"
 #include "messages.hpp"
 
-InputHandler::InputHandler(fea::MessageBus& bus, sf::Window& window)    :
+InputHandler::InputHandler(fea::MessageBus& bus, fea::InputHandler& handler)    :
     mBus(bus),
-    mWindow(window)
+    mHandler(handler)
 {
     mDirectionsPressed.fill(false);
 }
 
 void InputHandler::process()
 {
-    sf::Event event;
-    while(mWindow.pollEvent(event))
+    fea::Event event;
+    while(mHandler.pollEvent(event))
     {
-        if(event.type == sf::Event::KeyPressed)
+        if(event.type == fea::Event::KEYPRESSED)
         {
             mBus.send(AnyKeyPressedMessage());
-            if(event.key.code == sf::Keyboard::Q)
+            if(event.key.code == fea::Keyboard::Q)
                 mBus.send(QuitMessage());
-            else if(event.key.code == sf::Keyboard::A)
+            else if(event.key.code == fea::Keyboard::A)
                 mBus.send(MoveMessage(LEFT));
                 //mDirectionsPressed[0] = true;
-            else if(event.key.code == sf::Keyboard::D)
+            else if(event.key.code == fea::Keyboard::D)
                 mBus.send(MoveMessage(RIGHT));
                 //mDirectionsPressed[1] = true;
-            else if(event.key.code == sf::Keyboard::W)
+            else if(event.key.code == fea::Keyboard::W)
                 mBus.send(MoveMessage(UP));
                 //mDirectionsPressed[2] = true;
-            else if(event.key.code == sf::Keyboard::S)
+            else if(event.key.code == fea::Keyboard::S)
                 mBus.send(MoveMessage(DOWN));
                 //mDirectionsPressed[3] = true;
-            else if(event.key.code == sf::Keyboard::N)
+            else if(event.key.code == fea::Keyboard::N)
                 mBus.send(LevelAdvanceMessage(1));
-            else if(event.key.code == sf::Keyboard::P)
+            else if(event.key.code == fea::Keyboard::P)
                 mBus.send(LevelAdvanceMessage(-1));
-            else if(event.key.code == sf::Keyboard::R)
+            else if(event.key.code == fea::Keyboard::R)
                 mBus.send(LevelRestartMessage());
         }
-        else if(event.type == sf::Event::KeyReleased)
+        else if(event.type == fea::Event::KEYRELEASED)
         {
-            if(event.key.code == sf::Keyboard::A)
+            if(event.key.code == fea::Keyboard::A)
                 mDirectionsPressed[0] = false;
-            else if(event.key.code == sf::Keyboard::D)
+            else if(event.key.code == fea::Keyboard::D)
                 mDirectionsPressed[1] = false;
-            else if(event.key.code == sf::Keyboard::W)
+            else if(event.key.code == fea::Keyboard::W)
                 mDirectionsPressed[2] = false;
-            else if(event.key.code == sf::Keyboard::S)
+            else if(event.key.code == fea::Keyboard::S)
                 mDirectionsPressed[3] = false;
         }
-        else if(event.type == sf::Event::Closed)
+        else if(event.type == fea::Event::CLOSED)
         {
             mBus.send(QuitMessage());
         }
-        else if(event.type == sf::Event::Resized)
+        else if(event.type == fea::Event::RESIZED)
         {
             mBus.send(ResizeMessage({event.size.width, event.size.height}));
         }

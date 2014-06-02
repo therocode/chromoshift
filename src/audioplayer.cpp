@@ -6,16 +6,21 @@ AudioPlayer::AudioPlayer(fea::MessageBus& bus) :
     mBus.addSubscriber<SoundMessage>(*this);
     mBus.addSubscriber<SongPlayingMessage>(*this);
 
-    mAdderBuf.loadFromFile("audio/adder.ogg");
-    mSubberBuf.loadFromFile("audio/subber.ogg");
-    mDieBuf.loadFromFile("audio/die.ogg");
+    fea::AudioFile file;
 
-    mAdder.setBuffer(mAdderBuf);
-    mSubber.setBuffer(mSubberBuf);
-    mDie.setBuffer(mDieBuf);
+    file.open("audio/adder.ogg");
+    mAdderSample.loadSampleData(file);
+    file.open("audio/subber.ogg");
+    mSubberSample.loadSampleData(file);
+    file.open("audio/die.ogg");
+    mDieSample.loadSampleData(file);
 
-    mSong.openFromFile("audio/song.ogg");
-    mSong.setLoop(true);
+    mAdder.setSample(mAdderSample);
+    mSubber.setSample(mSubberSample);
+    mDie.setSample(mDieSample);
+
+    mSong.openFile("audio/song.ogg");
+    mSong.setLooping(true);
 }
 
 AudioPlayer::~AudioPlayer()
@@ -31,13 +36,13 @@ void AudioPlayer::handleMessage(const SoundMessage& message)
     switch(sound)
     {
         case ADDER:
-            mAdder.play();
+            mAdderHandle = mAudioPlayer.play(mAdder);
             break;
         case SUBBER:
-            mSubber.play();
+            mSubberHandle = mAudioPlayer.play(mSubber);
             break;
         case DIE:
-            mDie.play();
+            mDieHandle = mAudioPlayer.play(mDie);
             break;
     }
 }
@@ -48,12 +53,12 @@ void AudioPlayer::handleMessage(const SongPlayingMessage& message)
 
     if(playing)
     {
-        mSong.stop();
-        mAdder.stop();
-        mSubber.stop();
-        mDie.stop();
-        mSong.play();
+        mAudioPlayer.stop(mSongHandle);
+        mAudioPlayer.stop(mAdderHandle);
+        mAudioPlayer.stop(mSubberHandle);
+        mAudioPlayer.stop(mDieHandle);
+        mSongHandle = mAudioPlayer.play(mSong);
     }
     else
-        mSong.stop();
+        mAudioPlayer.stop(mSongHandle);
 }

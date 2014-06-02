@@ -1,15 +1,15 @@
 #pragma once
-#include <SFML/Window.hpp>
 #include <fea/messaging.hpp>
+#include <fea/userinterface.hpp>
 #include <array>
 
 class InputHandler
 {
     public:
-        InputHandler(fea::MessageBus& bus, sf::Window& window);
+        InputHandler(fea::MessageBus& bus, fea::InputHandler& handler);
         void process();
     private:
-        sf::Window& mWindow;
+        fea::InputHandler& mHandler;
         fea::MessageBus& mBus;
 
         std::array<bool, 4> mDirectionsPressed;

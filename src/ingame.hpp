@@ -6,7 +6,6 @@
 #include "renderer.hpp"
 #include "levelloader.hpp"
 #include "levelmanager.hpp"
-#include <SFML/Graphics.hpp>
 
 class InGameState : 
     public fea::GameState,
@@ -17,7 +16,7 @@ class InGameState :
     public PlayerDiedMessageReceiver
 {
     public:
-        InGameState(fea::MessageBus& bus, sf::RenderWindow& w);
+        InGameState(fea::MessageBus& bus, fea::Renderer2D& r);
         ~InGameState();
         void setup() override;
         void activate(const std::string& previous) override;

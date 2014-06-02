@@ -1,8 +1,9 @@
 #include "menu.hpp"
+#include "texturemaker.hpp"
 
-MenuState::MenuState(fea::MessageBus& bus, sf::RenderWindow& w) : 
+MenuState::MenuState(fea::MessageBus& bus, fea::Renderer2D& r) : 
     mBus(bus),
-    mWindow(w)
+    mRenderer(r)
 {
     mBus.addSubscriber<QuitMessage>(*this);
     mBus.addSubscriber<AnyKeyPressedMessage>(*this);
@@ -18,9 +19,11 @@ MenuState::~MenuState()
 
 void MenuState::setup()
 {
-    splashScreenTexture.loadFromFile("textures/splashscreen.png");
+    splashScreenTexture = makeTexture("textures/splashscreen.png");
+
+    splashScreenSprite = fea::Quad({800.0f, 600.0f});
     splashScreenSprite.setTexture(splashScreenTexture);
-    splashScreenSprite.setScale({20.0f, 20.0f});
+    //splashScreenSprite.setScale({20.0f, 20.0f});
 }
 
 void MenuState::activate(const std::string& previous)
@@ -29,8 +32,10 @@ void MenuState::activate(const std::string& previous)
 
 std::string MenuState::run()
 {
-    mWindow.clear();
-    mWindow.draw(splashScreenSprite);
+    mRenderer.clear();
+    mRenderer.queue(splashScreenSprite);
+    mRenderer.render();
+
     return mNextState;
 }
 
@@ -48,6 +53,6 @@ void MenuState::handleMessage(const ResizeMessage& message)
 {
     glm::uvec2 screenSize;
     std::tie(screenSize) = message.mData;
-    sf::View newView(sf::FloatRect(0.0f, 0.0f, screenSize.x, screenSize.y));
-    mWindow.setView(newView);
+    //sf::View newView(sf::FloatRect(0.0f, 0.0f, screenSize.x, screenSize.y));
+    //mWindow.setView(newView);
 }

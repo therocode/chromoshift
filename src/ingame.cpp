@@ -1,10 +1,10 @@
 #include "ingame.hpp"
 
-InGameState::InGameState(fea::MessageBus& bus, sf::RenderWindow& w) : 
+InGameState::InGameState(fea::MessageBus& bus, fea::Renderer2D& r) : 
     mBus(bus),
     mScene(bus),
     mInterface(bus),
-    mRenderer(bus, w),
+    mRenderer(bus, r),
     mLevelLoader(bus),
     isSolved(false),
     isDead(false)

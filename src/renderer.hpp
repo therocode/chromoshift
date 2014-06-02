@@ -1,15 +1,15 @@
 #pragma once
+#include <fea/render2d.hpp>
 #include "messages.hpp"
 #include <unordered_map>
-#include <SFML/Graphics.hpp>
 #include "colour.hpp"
 
 class Pickup
 {
     public:
         Pickup();
-        sf::RectangleShape rectangle;
-        sf::Sprite overlay;
+        fea::Quad rectangle;
+        fea::SubrectQuad overlay;
         void tick();
     private:
         int32_t counter;
@@ -27,7 +27,7 @@ class Renderer :
     public PlayerDiedMessageReceiver
 {
     public:
-        Renderer(fea::MessageBus& b, sf::RenderWindow& w);
+        Renderer(fea::MessageBus& b, fea::Renderer2D& r);
         ~Renderer();
         void handleMessage(const BGMessage& message) override;
         void handleMessage(const ResizeMessage& message) override;
@@ -41,37 +41,35 @@ class Renderer :
         void render();
     private:
         Pickup createPickup(const glm::uvec2& position, const glm::uvec3& color, bool additive);
-        sf::Color glmToSFColour(const glm::uvec3& col) const;
+        fea::Color glmToFeaColour(const glm::uvec3& col) const;
         void updateInterface();
         fea::MessageBus& mBus;
-        sf::RenderWindow& mWindow;
+        fea::Renderer2D& mRenderer;
 
-        sf::Color mBackgroundColor;
+        fea::Color mBackgroundColor;
 
         glm::vec2 mTileSize;
 
         // scene stuff //
-        sf::View mSceneView;
-        sf::Texture mBgTexture;
-        sf::Sprite mBackground;
+        fea::Texture mBgTexture;
+        fea::Quad mBackground;
 
-        sf::RectangleShape mPlayer;
+        fea::Quad mPlayer;
 
-        sf::Texture mPickupTexture;
+        fea::Texture mPickupTexture;
         std::unordered_map<size_t, Pickup> mPickups;
 
         // interface stuff //
-        sf::View mInterfaceView;
-        sf::Texture mInterfaceTexture;
-        sf::Texture mInterfaceOverlayTexture;
-        sf::Sprite mInterfaceSprite;
-        sf::Sprite mInterfaceOverlaySprite;
+        fea::Texture mInterfaceTexture;
+        fea::Texture mInterfaceOverlayTexture;
+        fea::Quad mInterfaceSprite;
+        fea::Quad mInterfaceOverlaySprite;
         glm::uvec2 mInterfacePosition;
         glm::uvec3 mGoalColour;
         glm::uvec3 mPlayerColour;
-        std::unordered_map<Colour, std::vector<sf::RectangleShape>> mGoalColourMeter;
-        std::unordered_map<Colour, std::vector<sf::RectangleShape>> mPlayerColourMeter;
-        std::unordered_map<Colour, std::vector<sf::RectangleShape>> mOverlayMeter;
+        std::unordered_map<Colour, std::vector<fea::Quad>> mGoalColourMeter;
+        std::unordered_map<Colour, std::vector<fea::Quad>> mPlayerColourMeter;
+        std::unordered_map<Colour, std::vector<fea::Quad>> mOverlayMeter;
         glm::ivec3 mAnimationInfo;
         uint32_t mAnimationTimer;
 };

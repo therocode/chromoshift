@@ -1,6 +1,6 @@
 #include <fea/structure.hpp>
+#include <fea/render2d.hpp>
 #include <fea/messaging.hpp>
-#include <SFML/Graphics.hpp>
 #include "inputhandler.hpp"
 #include "audioplayer.hpp"
 
@@ -14,7 +14,9 @@ class ChromoShift : public fea::Application
         virtual void loop() override;
     private:
         fea::MessageBus mBus;
-        sf::RenderWindow mWindow;
+        fea::Renderer2D mRenderer;
+        fea::Window mWindow;
+        fea::InputHandler mFeaInputHandler;
         InputHandler mInputHandler;
         AudioPlayer mAudioPlayer;
 

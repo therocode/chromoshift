@@ -1,12 +1,13 @@
 #include "renderer.hpp"
 #include <iostream>
+#include "texturemaker.hpp"
 
-const sf::Color goalRed(255, 120, 120);
-const sf::Color goalGreen(120, 255, 120);
-const sf::Color goalBlue(120, 120, 255);
-const sf::Color playerRed(255, 0, 0);
-const sf::Color playerGreen(0, 255, 0);
-const sf::Color playerBlue(0, 0, 255);
+const fea::Color goalRed(255, 120, 120);
+const fea::Color goalGreen(120, 255, 120);
+const fea::Color goalBlue(120, 120, 255);
+const fea::Color playerRed(255, 0, 0);
+const fea::Color playerGreen(0, 255, 0);
+const fea::Color playerBlue(0, 0, 255);
 
 Pickup::Pickup() :
     counter(0)
@@ -21,14 +22,13 @@ void Pickup::tick()
 
     int32_t opacity = (abs(counter / 2 - 16) / 2) + 4;
 
-    sf::Color current = overlay.getColor();
-    current.a = std::min(255, opacity * 16);
-    overlay.setColor(current);
+    fea::Color current = overlay.getColor();
+    overlay.setOpacity((float)opacity / 16.0f);
 }
 
-Renderer::Renderer(fea::MessageBus& b, sf::RenderWindow& w) :
+Renderer::Renderer(fea::MessageBus& b, fea::Renderer2D& r) :
     mBus(b),
-    mWindow(w),
+    mRenderer(r),
     mTileSize({30.0f, 30.0f}),
     mInterfacePosition({0.0f, 500.0f}),
     mAnimationTimer(0)
@@ -45,20 +45,21 @@ Renderer::Renderer(fea::MessageBus& b, sf::RenderWindow& w) :
 
     mPlayer.setSize({mTileSize.x, mTileSize.y});
 
-    mPickupTexture.loadFromFile("textures/addsub.png");
+    mPickupTexture = makeTexture("textures/addsub.png");
 
-    mInterfaceTexture.loadFromFile("textures/rgb.png");
+    mInterfaceTexture = makeTexture("textures/rgb.png");
+    mInterfaceSprite = fea::Quad(mInterfaceSprite.getSize());
     mInterfaceSprite.setTexture(mInterfaceTexture);
     mInterfaceSprite.setScale({5.0f, 5.0f});
     mInterfaceSprite.setPosition({(float)mInterfacePosition.x, (float)mInterfacePosition.y});
+    mInterfaceSprite.setParallax({0.0f, 0.0f});
 
-    mInterfaceOverlayTexture.loadFromFile("textures/rgb-overlay.png");
+    mInterfaceOverlayTexture = makeTexture("textures/rgb-overlay.png");
+    mInterfaceOverlaySprite = fea::Quad(mInterfaceOverlayTexture.getSize());
     mInterfaceOverlaySprite.setTexture(mInterfaceOverlayTexture);
     mInterfaceOverlaySprite.setScale({5.0f, 5.0f});
     mInterfaceOverlaySprite.setPosition({(float)mInterfacePosition.x, (float)mInterfacePosition.y});
-
-    mSceneView.reset({0, 0, 800, 600});
-    mInterfaceView.reset({0, 0, 800, 600});
+    mInterfaceOverlaySprite.setParallax({0.0f, 0.0f});
 }
 
 Renderer::~Renderer()
@@ -76,12 +77,12 @@ Renderer::~Renderer()
 
 void Renderer::handleMessage(const BGMessage& message)
 {
-    const sf::Image& image = std::get<0>(message.mData);
+    fea::Texture& image = std::get<0>(message.mData);
 
-    mBgTexture.loadFromImage(image);
-    mBackground = sf::Sprite();
+    mBgTexture = std::move(image);
+    mBackground = fea::Quad(mBgTexture.getSize());
     mBackground.setTexture(mBgTexture);
-    mBackground.setScale(mTileSize.x, mTileSize.y);
+    mBackground.setScale({mTileSize.x, mTileSize.y});
     mAnimationInfo = glm::ivec3();
 }
 
@@ -89,8 +90,7 @@ void Renderer::handleMessage(const ResizeMessage& message)
 {
     glm::uvec2 screenSize;
     std::tie(screenSize) = message.mData;
-    mSceneView.setSize(screenSize.x, screenSize.y);
-    mInterfaceView.setSize(screenSize.x, screenSize.y);
+    //mInterfaceView.setSize(screenSize.x, screenSize.y);
 }
 
 void Renderer::handleMessage(const PlayerPositionMessage& message)
@@ -101,7 +101,7 @@ void Renderer::handleMessage(const PlayerPositionMessage& message)
 
     mPlayer.setPosition({position.x * mTileSize.x, position.y * mTileSize.y});
     
-    mSceneView.setCenter(position.x * mTileSize.x, position.y * mTileSize.y);
+    mRenderer.getViewport().getCamera().setPosition({position.x * mTileSize.x, position.y * mTileSize.y});
 }
 
 void Renderer::handleMessage(const GoalColourMessage& message)
@@ -109,29 +109,32 @@ void Renderer::handleMessage(const GoalColourMessage& message)
     mGoalColour = std::get<0>(message.mData);
 
     mGoalColourMeter.clear();
-    mInterfaceOverlaySprite.setColor(glmToSFColour(mGoalColour));
+    mInterfaceOverlaySprite.setColor(glmToFeaColour(mGoalColour));
     for(uint32_t i = 0; i < mGoalColour.r; i++)   //r
     {
-        sf::RectangleShape rect;
+        fea::Quad rect;
         rect.setPosition({mInterfacePosition.x + (mTileSize.x * (i + 2)), mInterfacePosition.y + (mTileSize.y * 0)});
         rect.setSize({mTileSize.x, mTileSize.y});
-        rect.setFillColor(goalRed);
+        rect.setColor(goalRed);
+        rect.setParallax({0.0f, 0.0f});
         mGoalColourMeter[RED].push_back(rect);
     }
     for(uint32_t i = 0; i < mGoalColour.g; i++)   //g
     {
-        sf::RectangleShape rect;
+        fea::Quad rect;
         rect.setPosition({mInterfacePosition.x + (mTileSize.x * (i + 2)), mInterfacePosition.y + (mTileSize.y * 1)});
         rect.setSize({mTileSize.x, mTileSize.y});
-        rect.setFillColor(goalGreen);
+        rect.setColor(goalGreen);
+        rect.setParallax({0.0f, 0.0f});
         mGoalColourMeter[GREEN].push_back(rect);
     }
     for(uint32_t i = 0; i < mGoalColour.b; i++)   //b
     {
-        sf::RectangleShape rect;
+        fea::Quad rect;
         rect.setPosition({mInterfacePosition.x + (mTileSize.x * (i + 2)), mInterfacePosition.y + (mTileSize.y * 2)});
         rect.setSize({mTileSize.x, mTileSize.y});
-        rect.setFillColor(goalBlue);
+        rect.setColor(goalBlue);
+        rect.setParallax({0.0f, 0.0f});
         mGoalColourMeter[BLUE].push_back(rect);
     }
 }
@@ -140,31 +143,34 @@ void Renderer::handleMessage(const PlayerColourMessage& message)
 {
     mPlayerColour = std::get<0>(message.mData);
 
-    mPlayer.setFillColor(glmToSFColour(mPlayerColour));
+    mPlayer.setColor(glmToFeaColour(mPlayerColour));
 
     mPlayerColourMeter.clear();
     for(uint32_t i = 0; i < mPlayerColour.r; i++)   //r
     {
-        sf::RectangleShape rect;
+        fea::Quad rect;
         rect.setPosition({mInterfacePosition.x + (mTileSize.x * (i + 2)), mInterfacePosition.y + (mTileSize.y * 0)});
         rect.setSize({mTileSize.x, mTileSize.y});
-        rect.setFillColor(playerRed);
+        rect.setColor(playerRed);
+        rect.setParallax({0.0f, 0.0f});
         mPlayerColourMeter[RED].push_back(rect);
     }
     for(uint32_t i = 0; i < mPlayerColour.g; i++)   //g
     {
-        sf::RectangleShape rect;
+        fea::Quad rect;
         rect.setPosition({mInterfacePosition.x + (mTileSize.x * (i + 2)), mInterfacePosition.y + (mTileSize.y * 1)});
         rect.setSize({mTileSize.x, mTileSize.y});
-        rect.setFillColor(playerGreen);
+        rect.setColor(playerGreen);
+        rect.setParallax({0.0f, 0.0f});
         mPlayerColourMeter[GREEN].push_back(rect);
     }
     for(uint32_t i = 0; i < mPlayerColour.b; i++)   //b
     {
-        sf::RectangleShape rect;
+        fea::Quad rect;
         rect.setPosition({mInterfacePosition.x + (mTileSize.x * (i + 2)), mInterfacePosition.y + (mTileSize.y * 2)});
         rect.setSize({mTileSize.x, mTileSize.y});
-        rect.setFillColor(playerBlue);
+        rect.setColor(playerBlue);
+        rect.setParallax({0.0f, 0.0f});
         mPlayerColourMeter[BLUE].push_back(rect);
     }
 
@@ -172,26 +178,29 @@ void Renderer::handleMessage(const PlayerColourMessage& message)
     mOverlayMeter.clear();
     for(uint32_t i = 0; i < 4; i++)
     {
-        sf::RectangleShape rect;
+        fea::Quad rect;
         rect.setPosition({mInterfacePosition.x + (mTileSize.x * (i + 2)), mInterfacePosition.y + (mTileSize.y * 0)});
         rect.setSize({mTileSize.x, mTileSize.y});
-        rect.setFillColor(sf::Color::Black);
+        rect.setColor(fea::Color::Black);
+        rect.setParallax({0.0f, 0.0f});
         mOverlayMeter[RED].push_back(rect);
     }
     for(uint32_t i = 0; i < 4; i++)
     {
-        sf::RectangleShape rect;
+        fea::Quad rect;
         rect.setPosition({mInterfacePosition.x + (mTileSize.x * (i + 2)), mInterfacePosition.y + (mTileSize.y * 1)});
         rect.setSize({mTileSize.x, mTileSize.y});
-        rect.setFillColor(sf::Color::Black);
+        rect.setColor(fea::Color::Black);
+        rect.setParallax({0.0f, 0.0f});
         mOverlayMeter[GREEN].push_back(rect);
     }
     for(uint32_t i = 0; i < 4; i++)
     {
-        sf::RectangleShape rect;
+        fea::Quad rect;
         rect.setPosition({mInterfacePosition.x + (mTileSize.x * (i + 2)), mInterfacePosition.y + (mTileSize.y * 2)});
         rect.setSize({mTileSize.x, mTileSize.y});
-        rect.setFillColor(sf::Color::Black);
+        rect.setColor(fea::Color::Black);
+        rect.setParallax({0.0f, 0.0f});
         mOverlayMeter[BLUE].push_back(rect);
     }
 }
@@ -229,51 +238,49 @@ void Renderer::handleMessage(const PlayerDiedMessage& message)
 
 void Renderer::render()
 {
-    mWindow.clear(mBackgroundColor);
+    mRenderer.clear(mBackgroundColor);
 
     // scene //
-    mWindow.setView(mSceneView);
-
-    mWindow.draw(mBackground);
+    mRenderer.queue(mBackground);
     for(auto& pickup : mPickups)
     {
-        mWindow.draw(pickup.second.rectangle);
-        mWindow.draw(pickup.second.overlay);
+        mRenderer.queue(pickup.second.rectangle);
+        mRenderer.queue(pickup.second.overlay);
         pickup.second.tick();
     }
-    mWindow.draw(mPlayer);
+    mRenderer.queue(mPlayer);
 
     // interface //
-    mWindow.setView(mInterfaceView);
-
-    mWindow.draw(mInterfaceSprite);
-    mWindow.draw(mInterfaceOverlaySprite);
+    mRenderer.queue(mInterfaceSprite);
+    mRenderer.queue(mInterfaceOverlaySprite);
     for(auto& map : mGoalColourMeter)
     {
         for(auto& rect : map.second)
-            mWindow.draw(rect);
+            mRenderer.queue(rect);
     }
     for(auto& map : mPlayerColourMeter)
     {
         for(auto& rect : map.second)
-            mWindow.draw(rect);
+            mRenderer.queue(rect);
     }
 
     if(mAnimationInfo.r == -1)
         for(auto& player : mOverlayMeter[RED])
         {
-            mWindow.draw(player);
+            mRenderer.queue(player);
         }
     if(mAnimationInfo.g == -1)
         for(auto& player : mOverlayMeter[GREEN])
         {
-            mWindow.draw(player);
+            mRenderer.queue(player);
         }
     if(mAnimationInfo.b == -1)
         for(auto& player : mOverlayMeter[BLUE])
         {
-            mWindow.draw(player);
+            mRenderer.queue(player);
         }
+
+    mRenderer.render();
 
     updateInterface();
 }
@@ -284,22 +291,22 @@ Pickup Renderer::createPickup(const glm::uvec2& position, const glm::uvec3& colo
 
     pickup.rectangle.setPosition({position.x * mTileSize.x, position.y * mTileSize.y});
     pickup.rectangle.setSize({mTileSize.x, mTileSize.y});
-    pickup.rectangle.setFillColor(glmToSFColour(color));
+    pickup.rectangle.setColor(glmToFeaColour(color));
     pickup.overlay.setPosition({position.x * mTileSize.x, position.y * mTileSize.y});
     pickup.overlay.setTexture(mPickupTexture);
-    pickup.overlay.setTextureRect({additive ? 0 : 6, 0, 6, 6});
-    pickup.overlay.setScale({5.0f, 5.0f});
+    pickup.overlay.setSubrect({additive ? 0.0f : 0.5f, 0.0f}, {additive ? 0.5f : 1.0f, 1.0f});
+    pickup.overlay.setSize({mTileSize.x, mTileSize.y});
 
     return pickup;
 }
 
-sf::Color Renderer::glmToSFColour(const glm::uvec3& col) const
+fea::Color Renderer::glmToFeaColour(const glm::uvec3& col) const
 {
-    sf::Color realColor;
+    fea::Color realColor;
 
-    realColor.r = std::max(0, (int32_t)col.r * 64 - 1);
-    realColor.g = std::max(0, (int32_t)col.g * 64 - 1);
-    realColor.b = std::max(0, (int32_t)col.b * 64 - 1);
+    realColor.setRAsByte(std::max(0, (int32_t)col.r * 64 - 1));
+    realColor.setGAsByte(std::max(0, (int32_t)col.g * 64 - 1));
+    realColor.setBAsByte(std::max(0, (int32_t)col.b * 64 - 1));
 
     return realColor;
 }
@@ -316,33 +323,33 @@ void Renderer::updateInterface()
         if(mAnimationInfo.r == 1)
             for(auto& player : mPlayerColourMeter[RED])
             {
-                player.setFillColor(playerRed);
+                player.setColor(playerRed);
             }
         if(mAnimationInfo.g == 1)
             for(auto& player : mPlayerColourMeter[GREEN])
             {
-                player.setFillColor(playerGreen);
+                player.setColor(playerGreen);
             }
         if(mAnimationInfo.b == 1)
             for(auto& player : mPlayerColourMeter[BLUE])
             {
-                player.setFillColor(playerBlue);
+                player.setColor(playerBlue);
             }
 
         if(mAnimationInfo.r == -1)
             for(auto& player : mOverlayMeter[RED])
             {
-                player.setFillColor(playerRed - sf::Color(200, 0, 0, 0));
+                player.setColor(playerRed - fea::Color(200, 0, 0, 0));
             }
         if(mAnimationInfo.g == -1)
             for(auto& player : mOverlayMeter[GREEN])
             {
-                player.setFillColor(playerGreen - sf::Color(0, 200, 0, 0));
+                player.setColor(playerGreen - fea::Color(0, 200, 0, 0));
             }
         if(mAnimationInfo.b == -1)
             for(auto& player : mOverlayMeter[BLUE])
             {
-                player.setFillColor(playerBlue - sf::Color(0, 0, 200, 0));
+                player.setColor(playerBlue - fea::Color(0, 0, 200, 0));
             }
     }
 
@@ -351,33 +358,33 @@ void Renderer::updateInterface()
         if(mAnimationInfo.r == 1)
             for(auto& player : mPlayerColourMeter[RED])
             {
-                player.setFillColor(playerRed + sf::Color(0, 100, 100));
+                player.setColor(playerRed + fea::Color(0, 100, 100));
             }
         if(mAnimationInfo.g == 1)
             for(auto& player : mPlayerColourMeter[GREEN])
             {
-                player.setFillColor(playerGreen + sf::Color(100, 0, 100));
+                player.setColor(playerGreen + fea::Color(100, 0, 100));
             }
         if(mAnimationInfo.b == 1)
             for(auto& player : mPlayerColourMeter[BLUE])
             {
-                player.setFillColor(playerBlue + sf::Color(100, 100, 0));
+                player.setColor(playerBlue + fea::Color(100, 100, 0));
             }
 
         if(mAnimationInfo.r == -1)
             for(auto& player : mOverlayMeter[RED])
             {
-                player.setFillColor(playerRed - sf::Color(230, 0, 0, 0));
+                player.setColor(playerRed - fea::Color(230, 0, 0, 0));
             }
         if(mAnimationInfo.g == -1)
             for(auto& player : mOverlayMeter[GREEN])
             {
-                player.setFillColor(playerGreen - sf::Color(0, 230, 0, 0));
+                player.setColor(playerGreen - fea::Color(0, 230, 0, 0));
             }
         if(mAnimationInfo.b == -1)
             for(auto& player : mOverlayMeter[BLUE])
             {
-                player.setFillColor(playerBlue - sf::Color(0, 0, 230, 0));
+                player.setColor(playerBlue - fea::Color(0, 0, 230, 0));
             }
     }
 }

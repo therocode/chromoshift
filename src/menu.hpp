@@ -1,7 +1,7 @@
 #pragma once
 #include "messages.hpp"
 #include <fea/structure.hpp>
-#include <SFML/Graphics.hpp>
+#include <fea/render2d.hpp>
 
 class MenuState : 
     public fea::GameState,
@@ -10,7 +10,7 @@ class MenuState :
     public ResizeMessageReceiver
 {
     public:
-        MenuState(fea::MessageBus& bus, sf::RenderWindow& w);
+        MenuState(fea::MessageBus& bus, fea::Renderer2D& r);
         ~MenuState();
         void setup() override;
         void activate(const std::string& previous) override;
@@ -22,10 +22,10 @@ class MenuState :
 
     private:
         fea::MessageBus& mBus;
-        sf::RenderWindow& mWindow;
+        fea::Renderer2D& mRenderer;
         
         std::string mNextState;
 
-        sf::Texture splashScreenTexture;
-        sf::Sprite splashScreenSprite;
+        fea::Texture splashScreenTexture;
+        fea::Quad splashScreenSprite;
 };

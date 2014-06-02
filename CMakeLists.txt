@@ -18,20 +18,20 @@ if(OPENGL_FOUND)
     include_directories(${OPENGL_INCLUDE_DIRS})
 endif(OPENGL_FOUND)
 
+find_package(OpenAL REQUIRED)
+if(OPENAL_FOUND)
+    include_directories(${OPENAL_INCLUDE_DIR})
+endif(OPENAL_FOUND)
+
 find_package(GLM REQUIRED)
 if(GLM_FOUND)
     include_directories(${GLM_INCLUDE_DIRS})
 endif()
 
-find_package(SFML COMPONENTS system window graphics audio REQUIRED)
-if(SFML_FOUND)
-    include_directories(${SFML_INCLUDE_DIRS})
-endif()
-
-find_package(Featherkit COMPONENTS messaging structure entity REQUIRED)
+find_package(Featherkit COMPONENTS messaging structure entity sdl audio rendering ui REQUIRED)
 if(FEATHERKIT_FOUND)
     include_directories(${FEATHERKIT_INCLUDE_DIRS})
 endif()
 
 add_executable(${project_name} ${header_files} ${source_files})
-target_link_libraries(${project_name} ${FEATHERKIT_LIBRARIES} ${OPENGL_LIBRARIES} ${SFML_LIBRARIES})
+target_link_libraries(${project_name} ${FEATHERKIT_LIBRARIES} ${OPENGL_LIBRARIES})

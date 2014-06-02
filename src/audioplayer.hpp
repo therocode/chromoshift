@@ -1,6 +1,6 @@
 #pragma once
 #include "messages.hpp"
-#include <SFML/Audio.hpp>
+#include <fea/audio.hpp>
 
 class AudioPlayer :
     public SoundMessageReceiver,
@@ -13,11 +13,17 @@ class AudioPlayer :
         virtual void handleMessage(const SongPlayingMessage& message) override;
     private:
         fea::MessageBus& mBus;
-        sf::SoundBuffer mAdderBuf;
-        sf::Sound mAdder;
-        sf::SoundBuffer mSubberBuf;
-        sf::Sound mSubber;
-        sf::SoundBuffer mDieBuf;
-        sf::Sound mDie;
-        sf::Music mSong;
+        fea::AudioPlayer mAudioPlayer;
+        fea::AudioSample mAdderSample;
+        fea::Audio mAdder;
+        fea::AudioSample mSubberSample;
+        fea::Audio mSubber;
+        fea::AudioSample mDieSample;
+        fea::Audio mDie;
+        fea::AudioFileStream mSong;
+        
+        fea::AudioHandle mAdderHandle;
+        fea::AudioHandle mSubberHandle;
+        fea::AudioHandle mDieHandle;
+        fea::AudioHandle mSongHandle;
 };
