@@ -33,6 +33,10 @@ FEA_DECLARE_MESSAGE(ColourPickupRemovedMessage, size_t);
 FEA_DECLARE_MESSAGE(SoundMessage, Sound);
 //                                      playing?
 FEA_DECLARE_MESSAGE(SongPlayingMessage, bool);
+//
+FEA_DECLARE_MESSAGE(PlayerDiedMessage);
+//
+FEA_DECLARE_MESSAGE(LevelSolvedMessage);
 //                                       amount
 FEA_DECLARE_MESSAGE(LevelAdvanceMessage, int32_t);
 //                                       amount

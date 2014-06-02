@@ -77,7 +77,7 @@ void Scene::handleMessage(const MoveMessage& mess)
 
     // add or subtract from player colour
     fea::EntityPtr pickup = colourPickupAtPosition(newPos);
-    if(pickup != nullptr)               // need to check for dying 
+    if(pickup != nullptr)
     {
         glm::uvec3 playerColour = mPlayer->getAttribute<glm::uvec3>("colour");
         glm::uvec3 pickupColour = pickup->getAttribute<glm::uvec3>("colour");
@@ -88,7 +88,10 @@ void Scene::handleMessage(const MoveMessage& mess)
             (playerColour = playerColour + pickupColour)
           : (playerColour = playerColour - pickupColour);
         
-        // check for dying
+        //check for dying
+        if(playerColour.r > 4 || playerColour.g > 4 || playerColour.b > 4)
+            mBus.send(PlayerDiedMessage());
+
         playerColour.r = std::min(4, std::max(0, (int32_t)playerColour.r));
         playerColour.g = std::min(4, std::max(0, (int32_t)playerColour.g));
         playerColour.b = std::min(4, std::max(0, (int32_t)playerColour.b));
@@ -97,6 +100,10 @@ void Scene::handleMessage(const MoveMessage& mess)
         mBus.send(PlayerColourMessage(playerColour));
         removeColourPickup(pickup->getId());
         mBus.send(SoundMessage( additive ? ADDER : SUBBER));
+
+        //check for winning
+        if(playerColour == mGoalColour)
+            mBus.send(LevelSolvedMessage());
     }
 }
 
@@ -149,7 +156,8 @@ void Scene::processWallMaskImage(const sf::Image& wallMaskImage)
         }
         else if(i == 1)
         {
-            mBus.send(GoalColourMessage(SFToGlmColour(colour)));
+            mGoalColour = SFToGlmColour(colour);
+            mBus.send(GoalColourMessage(mGoalColour));
             tempMask.at(i) = true;
         }
         // setting the other walls

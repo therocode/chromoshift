@@ -23,6 +23,7 @@ class Scene :
         // the colours within the colour pickups and player are in 0,1,2,3,4 form
         std::unordered_map<size_t, fea::EntityPtr> mColourPickups;
         WallMask mWallMask;
+        glm::uvec3 mGoalColour;
 
         void processWallMaskImage(const sf::Image& wallMaskImage);
         glm::uvec3 SFToGlmColour(const sf::Color& colour);
