@@ -5,11 +5,15 @@ InGameState::InGameState(fea::MessageBus& bus, sf::RenderWindow& w) :
     mScene(bus),
     mInterface(bus),
     mRenderer(bus, w),
-    mLevelLoader(bus)
+    mLevelLoader(bus),
+    isSolved(false),
+    isDead(false)
 {
     mBus.addSubscriber<QuitMessage>(*this);
     mBus.addSubscriber<LevelAdvanceMessage>(*this);
     mBus.addSubscriber<LevelRestartMessage>(*this);
+    mBus.addSubscriber<LevelSolvedMessage>(*this);
+    mBus.addSubscriber<PlayerDiedMessage>(*this);
 }
 
 InGameState::~InGameState()
@@ -17,6 +21,8 @@ InGameState::~InGameState()
     mBus.removeSubscriber<QuitMessage>(*this);
     mBus.removeSubscriber<LevelAdvanceMessage>(*this);
     mBus.removeSubscriber<LevelRestartMessage>(*this);
+    mBus.removeSubscriber<LevelSolvedMessage>(*this);
+    mBus.removeSubscriber<PlayerDiedMessage>(*this);
 }
 
 void InGameState::setup()
@@ -34,6 +40,17 @@ void InGameState::activate(const std::string& previous)
 
 std::string InGameState::run()
 {
+    if(isDead)
+    {
+        restartLevel();
+        isDead = false;
+    }
+    if(isSolved)
+    {
+        nextLevel();
+        isSolved = false;
+    }
+
     mRenderer.render();
     return mNextState;
 }
@@ -62,6 +79,16 @@ void InGameState::handleMessage(const LevelAdvanceMessage& message)
 void InGameState::handleMessage(const LevelRestartMessage& message)
 {
     restartLevel();
+}
+
+void InGameState::handleMessage(const LevelSolvedMessage& message)
+{
+    isSolved = true;
+}
+
+void InGameState::handleMessage(const PlayerDiedMessage& message)
+{
+    isDead = true;
 }
 
 void InGameState::nextLevel()

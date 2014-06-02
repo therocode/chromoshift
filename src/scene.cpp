@@ -90,7 +90,9 @@ void Scene::handleMessage(const MoveMessage& mess)
         
         //check for dying
         if(playerColour.r > 4 || playerColour.g > 4 || playerColour.b > 4)
+        {
             mBus.send(PlayerDiedMessage());
+        }
 
         playerColour.r = std::min(4, std::max(0, (int32_t)playerColour.r));
         playerColour.g = std::min(4, std::max(0, (int32_t)playerColour.g));
