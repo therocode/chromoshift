@@ -2,6 +2,7 @@
 #include "messages.hpp"
 #include <unordered_map>
 #include <SFML/Graphics.hpp>
+#include "colour.hpp"
 
 class Pickup
 {
@@ -22,7 +23,8 @@ class Renderer :
     public PlayerColourMessageReceiver,
     public ColourPickupCreatedMessageReceiver,
     public ColourPickupRemovedMessageReceiver,
-    public BackgroundColourMessageReceiver
+    public BackgroundColourMessageReceiver,
+    public PlayerDiedMessageReceiver
 {
     public:
         Renderer(fea::MessageBus& b, sf::RenderWindow& w);
@@ -35,10 +37,12 @@ class Renderer :
         void handleMessage(const ColourPickupCreatedMessage& message) override;
         void handleMessage(const ColourPickupRemovedMessage& message) override;
         void handleMessage(const BackgroundColourMessage& message) override;
+        void handleMessage(const PlayerDiedMessage& message) override;
         void render();
     private:
         Pickup createPickup(const glm::uvec2& position, const glm::uvec3& color, bool additive);
         sf::Color glmToSFColour(const glm::uvec3& col) const;
+        void updateInterface();
         fea::MessageBus& mBus;
         sf::RenderWindow& mWindow;
 
@@ -65,6 +69,9 @@ class Renderer :
         glm::uvec2 mInterfacePosition;
         glm::uvec3 mGoalColour;
         glm::uvec3 mPlayerColour;
-        std::vector<sf::RectangleShape> mGoalColourMeter;
-        std::vector<sf::RectangleShape> mPlayerColourMeter;
+        std::unordered_map<Colour, std::vector<sf::RectangleShape>> mGoalColourMeter;
+        std::unordered_map<Colour, std::vector<sf::RectangleShape>> mPlayerColourMeter;
+        std::unordered_map<Colour, std::vector<sf::RectangleShape>> mOverlayMeter;
+        glm::ivec3 mAnimationInfo;
+        uint32_t mAnimationTimer;
 };

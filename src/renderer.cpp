@@ -1,6 +1,13 @@
 #include "renderer.hpp"
 #include <iostream>
 
+const sf::Color goalRed(255, 120, 120);
+const sf::Color goalGreen(120, 255, 120);
+const sf::Color goalBlue(120, 120, 255);
+const sf::Color playerRed(255, 0, 0);
+const sf::Color playerGreen(0, 255, 0);
+const sf::Color playerBlue(0, 0, 255);
+
 Pickup::Pickup() :
     counter(0)
 {
@@ -23,7 +30,8 @@ Renderer::Renderer(fea::MessageBus& b, sf::RenderWindow& w) :
     mBus(b),
     mWindow(w),
     mTileSize({30.0f, 30.0f}),
-    mInterfacePosition({0.0f, 500.0f})
+    mInterfacePosition({0.0f, 500.0f}),
+    mAnimationTimer(0)
 {
     mBus.addSubscriber<BGMessage>(*this);
     mBus.addSubscriber<ResizeMessage>(*this);
@@ -33,6 +41,7 @@ Renderer::Renderer(fea::MessageBus& b, sf::RenderWindow& w) :
     mBus.addSubscriber<ColourPickupCreatedMessage>(*this);
     mBus.addSubscriber<ColourPickupRemovedMessage>(*this);
     mBus.addSubscriber<BackgroundColourMessage>(*this);
+    mBus.addSubscriber<PlayerDiedMessage>(*this);
 
     mPlayer.setSize({mTileSize.x, mTileSize.y});
 
@@ -62,6 +71,7 @@ Renderer::~Renderer()
     mBus.removeSubscriber<ColourPickupCreatedMessage>(*this);
     mBus.removeSubscriber<ColourPickupRemovedMessage>(*this);
     mBus.removeSubscriber<BackgroundColourMessage>(*this);
+    mBus.removeSubscriber<PlayerDiedMessage>(*this);
 }
 
 void Renderer::handleMessage(const BGMessage& message)
@@ -72,6 +82,7 @@ void Renderer::handleMessage(const BGMessage& message)
     mBackground = sf::Sprite();
     mBackground.setTexture(mBgTexture);
     mBackground.setScale(mTileSize.x, mTileSize.y);
+    mAnimationInfo = glm::ivec3();
 }
 
 void Renderer::handleMessage(const ResizeMessage& message)
@@ -104,24 +115,24 @@ void Renderer::handleMessage(const GoalColourMessage& message)
         sf::RectangleShape rect;
         rect.setPosition({mInterfacePosition.x + (mTileSize.x * (i + 2)), mInterfacePosition.y + (mTileSize.y * 0)});
         rect.setSize({mTileSize.x, mTileSize.y});
-        rect.setFillColor(sf::Color(255, 120, 120));
-        mGoalColourMeter.push_back(rect);
+        rect.setFillColor(goalRed);
+        mGoalColourMeter[RED].push_back(rect);
     }
     for(uint32_t i = 0; i < mGoalColour.g; i++)   //g
     {
         sf::RectangleShape rect;
         rect.setPosition({mInterfacePosition.x + (mTileSize.x * (i + 2)), mInterfacePosition.y + (mTileSize.y * 1)});
         rect.setSize({mTileSize.x, mTileSize.y});
-        rect.setFillColor(sf::Color(120, 255, 120));
-        mGoalColourMeter.push_back(rect);
+        rect.setFillColor(goalGreen);
+        mGoalColourMeter[GREEN].push_back(rect);
     }
     for(uint32_t i = 0; i < mGoalColour.b; i++)   //b
     {
         sf::RectangleShape rect;
         rect.setPosition({mInterfacePosition.x + (mTileSize.x * (i + 2)), mInterfacePosition.y + (mTileSize.y * 2)});
         rect.setSize({mTileSize.x, mTileSize.y});
-        rect.setFillColor(sf::Color(120, 120, 255));
-        mGoalColourMeter.push_back(rect);
+        rect.setFillColor(goalBlue);
+        mGoalColourMeter[BLUE].push_back(rect);
     }
 }
 
@@ -137,24 +148,51 @@ void Renderer::handleMessage(const PlayerColourMessage& message)
         sf::RectangleShape rect;
         rect.setPosition({mInterfacePosition.x + (mTileSize.x * (i + 2)), mInterfacePosition.y + (mTileSize.y * 0)});
         rect.setSize({mTileSize.x, mTileSize.y});
-        rect.setFillColor(sf::Color(255, 0, 0));
-        mPlayerColourMeter.push_back(rect);
+        rect.setFillColor(playerRed);
+        mPlayerColourMeter[RED].push_back(rect);
     }
     for(uint32_t i = 0; i < mPlayerColour.g; i++)   //g
     {
         sf::RectangleShape rect;
         rect.setPosition({mInterfacePosition.x + (mTileSize.x * (i + 2)), mInterfacePosition.y + (mTileSize.y * 1)});
         rect.setSize({mTileSize.x, mTileSize.y});
-        rect.setFillColor(sf::Color(0, 255, 0));
-        mPlayerColourMeter.push_back(rect);
+        rect.setFillColor(playerGreen);
+        mPlayerColourMeter[GREEN].push_back(rect);
     }
     for(uint32_t i = 0; i < mPlayerColour.b; i++)   //b
     {
         sf::RectangleShape rect;
         rect.setPosition({mInterfacePosition.x + (mTileSize.x * (i + 2)), mInterfacePosition.y + (mTileSize.y * 2)});
         rect.setSize({mTileSize.x, mTileSize.y});
-        rect.setFillColor(sf::Color(0, 0, 255));
-        mPlayerColourMeter.push_back(rect);
+        rect.setFillColor(playerBlue);
+        mPlayerColourMeter[BLUE].push_back(rect);
+    }
+
+
+    mOverlayMeter.clear();
+    for(uint32_t i = 0; i < 4; i++)
+    {
+        sf::RectangleShape rect;
+        rect.setPosition({mInterfacePosition.x + (mTileSize.x * (i + 2)), mInterfacePosition.y + (mTileSize.y * 0)});
+        rect.setSize({mTileSize.x, mTileSize.y});
+        rect.setFillColor(sf::Color::Black);
+        mOverlayMeter[RED].push_back(rect);
+    }
+    for(uint32_t i = 0; i < 4; i++)
+    {
+        sf::RectangleShape rect;
+        rect.setPosition({mInterfacePosition.x + (mTileSize.x * (i + 2)), mInterfacePosition.y + (mTileSize.y * 1)});
+        rect.setSize({mTileSize.x, mTileSize.y});
+        rect.setFillColor(sf::Color::Black);
+        mOverlayMeter[GREEN].push_back(rect);
+    }
+    for(uint32_t i = 0; i < 4; i++)
+    {
+        sf::RectangleShape rect;
+        rect.setPosition({mInterfacePosition.x + (mTileSize.x * (i + 2)), mInterfacePosition.y + (mTileSize.y * 2)});
+        rect.setSize({mTileSize.x, mTileSize.y});
+        rect.setFillColor(sf::Color::Black);
+        mOverlayMeter[BLUE].push_back(rect);
     }
 }
 
@@ -184,6 +222,11 @@ void Renderer::handleMessage(const BackgroundColourMessage& message)
     mBackgroundColor = std::get<0>(message.mData);
 }
 
+void Renderer::handleMessage(const PlayerDiedMessage& message)
+{
+    mAnimationInfo = std::get<0>(message.mData);
+}
+
 void Renderer::render()
 {
     mWindow.clear(mBackgroundColor);
@@ -205,14 +248,34 @@ void Renderer::render()
 
     mWindow.draw(mInterfaceSprite);
     mWindow.draw(mInterfaceOverlaySprite);
-    for(auto& rect : mGoalColourMeter)
+    for(auto& map : mGoalColourMeter)
     {
-        mWindow.draw(rect);
+        for(auto& rect : map.second)
+            mWindow.draw(rect);
     }
-    for(auto& rect : mPlayerColourMeter)
+    for(auto& map : mPlayerColourMeter)
     {
-        mWindow.draw(rect);
+        for(auto& rect : map.second)
+            mWindow.draw(rect);
     }
+
+    if(mAnimationInfo.r == -1)
+        for(auto& player : mOverlayMeter[RED])
+        {
+            mWindow.draw(player);
+        }
+    if(mAnimationInfo.g == -1)
+        for(auto& player : mOverlayMeter[GREEN])
+        {
+            mWindow.draw(player);
+        }
+    if(mAnimationInfo.b == -1)
+        for(auto& player : mOverlayMeter[BLUE])
+        {
+            mWindow.draw(player);
+        }
+
+    updateInterface();
 }
 
 Pickup Renderer::createPickup(const glm::uvec2& position, const glm::uvec3& color, bool additive)
@@ -239,4 +302,82 @@ sf::Color Renderer::glmToSFColour(const glm::uvec3& col) const
     realColor.b = std::max(0, (int32_t)col.b * 64 - 1);
 
     return realColor;
+}
+
+void Renderer::updateInterface()
+{
+    mAnimationTimer++;
+
+    if(mAnimationTimer == 46)
+        mAnimationTimer = 0;
+
+    if(mAnimationTimer == 23)
+    {
+        if(mAnimationInfo.r == 1)
+            for(auto& player : mPlayerColourMeter[RED])
+            {
+                player.setFillColor(playerRed);
+            }
+        if(mAnimationInfo.g == 1)
+            for(auto& player : mPlayerColourMeter[GREEN])
+            {
+                player.setFillColor(playerGreen);
+            }
+        if(mAnimationInfo.b == 1)
+            for(auto& player : mPlayerColourMeter[BLUE])
+            {
+                player.setFillColor(playerBlue);
+            }
+
+        if(mAnimationInfo.r == -1)
+            for(auto& player : mOverlayMeter[RED])
+            {
+                player.setFillColor(playerRed - sf::Color(200, 0, 0, 0));
+            }
+        if(mAnimationInfo.g == -1)
+            for(auto& player : mOverlayMeter[GREEN])
+            {
+                player.setFillColor(playerGreen - sf::Color(0, 200, 0, 0));
+            }
+        if(mAnimationInfo.b == -1)
+            for(auto& player : mOverlayMeter[BLUE])
+            {
+                player.setFillColor(playerBlue - sf::Color(0, 0, 200, 0));
+            }
+    }
+
+    if(mAnimationTimer == 45)
+    {
+        if(mAnimationInfo.r == 1)
+            for(auto& player : mPlayerColourMeter[RED])
+            {
+                player.setFillColor(playerRed + sf::Color(0, 100, 100));
+            }
+        if(mAnimationInfo.g == 1)
+            for(auto& player : mPlayerColourMeter[GREEN])
+            {
+                player.setFillColor(playerGreen + sf::Color(100, 0, 100));
+            }
+        if(mAnimationInfo.b == 1)
+            for(auto& player : mPlayerColourMeter[BLUE])
+            {
+                player.setFillColor(playerBlue + sf::Color(100, 100, 0));
+            }
+
+        if(mAnimationInfo.r == -1)
+            for(auto& player : mOverlayMeter[RED])
+            {
+                player.setFillColor(playerRed - sf::Color(230, 0, 0, 0));
+            }
+        if(mAnimationInfo.g == -1)
+            for(auto& player : mOverlayMeter[GREEN])
+            {
+                player.setFillColor(playerGreen - sf::Color(0, 230, 0, 0));
+            }
+        if(mAnimationInfo.b == -1)
+            for(auto& player : mOverlayMeter[BLUE])
+            {
+                player.setFillColor(playerBlue - sf::Color(0, 0, 230, 0));
+            }
+    }
 }

@@ -29,4 +29,6 @@ class Scene :
         glm::uvec3 SFToGlmColour(const sf::Color& colour);
         fea::EntityPtr colourPickupAtPosition(const glm::uvec2& pos);
         void removeColourPickup(size_t id);
+
+        bool mIsDead;
 };

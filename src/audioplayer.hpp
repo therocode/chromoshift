@@ -17,5 +17,7 @@ class AudioPlayer :
         sf::Sound mAdder;
         sf::SoundBuffer mSubberBuf;
         sf::Sound mSubber;
+        sf::SoundBuffer mDieBuf;
+        sf::Sound mDie;
         sf::Music mSong;
 };
