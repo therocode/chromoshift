@@ -39,7 +39,9 @@ FEA_DECLARE_MESSAGE(PlayerDiedMessage);
 FEA_DECLARE_MESSAGE(LevelSolvedMessage);
 //                                       amount
 FEA_DECLARE_MESSAGE(LevelAdvanceMessage, int32_t);
-//                                       amount
+//                                       
 FEA_DECLARE_MESSAGE(LevelRestartMessage);
-//                                                  colour
+//                                           colour
 FEA_DECLARE_MESSAGE(BackgroundColourMessage, const sf::Color&);
+//
+FEA_DECLARE_MESSAGE(AnyKeyPressedMessage);

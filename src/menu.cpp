@@ -5,14 +5,14 @@ MenuState::MenuState(fea::MessageBus& bus, sf::RenderWindow& w) :
     mWindow(w)
 {
     mBus.addSubscriber<QuitMessage>(*this);
-    mBus.addSubscriber<LevelAdvanceMessage>(*this);
+    mBus.addSubscriber<AnyKeyPressedMessage>(*this);
     mBus.addSubscriber<ResizeMessage>(*this);
 }
 
 MenuState::~MenuState()
 {
     mBus.removeSubscriber<QuitMessage>(*this);
-    mBus.removeSubscriber<LevelAdvanceMessage>(*this);
+    mBus.removeSubscriber<AnyKeyPressedMessage>(*this);
     mBus.removeSubscriber<ResizeMessage>(*this);
 }
 
@@ -39,7 +39,7 @@ void MenuState::handleMessage(const QuitMessage& message)
     mNextState = "NONE";
 }
 
-void MenuState::handleMessage(const LevelAdvanceMessage& message)
+void MenuState::handleMessage(const AnyKeyPressedMessage& message)
 {
     mNextState = "ingame";
 }

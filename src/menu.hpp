@@ -6,7 +6,7 @@
 class MenuState : 
     public fea::GameState,
     public QuitMessageReceiver,
-    public LevelAdvanceMessageReceiver,
+    public AnyKeyPressedMessageReceiver,
     public ResizeMessageReceiver
 {
     public:
@@ -17,7 +17,7 @@ class MenuState :
         std::string run() override;
 
         void handleMessage(const QuitMessage& message) override;
-        void handleMessage(const LevelAdvanceMessage& message) override;
+        void handleMessage(const AnyKeyPressedMessage& message) override;
         void handleMessage(const ResizeMessage& message) override;
 
     private:
