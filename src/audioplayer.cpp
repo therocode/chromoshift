@@ -8,9 +8,11 @@ AudioPlayer::AudioPlayer(fea::MessageBus& bus) :
 
     mAdderBuf.loadFromFile("audio/adder.ogg");
     mSubberBuf.loadFromFile("audio/subber.ogg");
+    mDieBuf.loadFromFile("audio/die.ogg");
 
     mAdder.setBuffer(mAdderBuf);
     mSubber.setBuffer(mSubberBuf);
+    mDie.setBuffer(mDieBuf);
 
     mSong.openFromFile("audio/song.ogg");
     mSong.setLoop(true);
@@ -34,6 +36,9 @@ void AudioPlayer::handleMessage(const SoundMessage& message)
         case SUBBER:
             mSubber.play();
             break;
+        case DIE:
+            mDie.play();
+            break;
     }
 }
 
@@ -44,6 +49,9 @@ void AudioPlayer::handleMessage(const SongPlayingMessage& message)
     if(playing)
     {
         mSong.stop();
+        mAdder.stop();
+        mSubber.stop();
+        mDie.stop();
         mSong.play();
     }
     else

@@ -1,3 +1,3 @@
 #pragma once
 
-enum Sound { ADDER, SUBBER };
+enum Sound { ADDER, SUBBER, DIE };

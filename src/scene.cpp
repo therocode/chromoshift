@@ -111,7 +111,16 @@ void Scene::handleMessage(const MoveMessage& mess)
         mPlayer->setAttribute("colour", playerColour);
         mBus.send(PlayerColourMessage(playerColour));
         removeColourPickup(pickup->getId());
-        mBus.send(SoundMessage( additive ? ADDER : SUBBER));
+
+        if(!mIsDead)
+        {
+            mBus.send(SoundMessage( additive ? ADDER : SUBBER));
+        }
+        else
+        {
+            mBus.send(SoundMessage(DIE));
+            mBus.send(SongPlayingMessage(false));
+        }
 
         //check for winning
         if(playerColour == mGoalColour)
