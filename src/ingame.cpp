@@ -98,6 +98,10 @@ void InGameState::nextLevel()
         mLevelLoader.load(mLevelManager.next());
         mBus.send(SongPlayingMessage(true));
     }
+    else
+    {
+        mNextState = "NONE";
+    }
 }
 
 void InGameState::previousLevel()
