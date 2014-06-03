@@ -1,7 +1,7 @@
 #include "scene.hpp"
 #include "direction.hpp"
-#include <fea/util/entity/glmtypeadder.hpp>
-#include <fea/util/entity/basictypeadder.hpp>
+#include <fea/entity/glmtypeadder.hpp>
+#include <fea/entity/basictypeadder.hpp>
 #include <glm/glm.hpp>
 
 Scene::Scene(fea::MessageBus& bus) :
@@ -12,8 +12,8 @@ Scene::Scene(fea::MessageBus& bus) :
     mBus.addSubscriber<MaskMessage>(*this);
     mBus.addSubscriber<MoveMessage>(*this);
 
-    fea::util::addGlmDataTypes(mFactory);
-    fea::util::addBasicDataTypes(mFactory);
+    fea::addGlmDataTypes(mFactory);
+    fea::addBasicDataTypes(mFactory);
 
     mFactory.registerAttribute("position", "uvec2");
     mFactory.registerAttribute("colour"  , "uvec3");
