@@ -48,7 +48,7 @@ Renderer::Renderer(fea::MessageBus& b, fea::Renderer2D& r) :
     mPickupTexture = makeTexture("textures/addsub.png");
 
     mInterfaceTexture = makeTexture("textures/rgb.png");
-    mInterfaceSprite = fea::Quad(mInterfaceSprite.getSize());
+    mInterfaceSprite = fea::Quad(mInterfaceTexture.getSize());
     mInterfaceSprite.setTexture(mInterfaceTexture);
     mInterfaceSprite.setScale({5.0f, 5.0f});
     mInterfaceSprite.setPosition({(float)mInterfacePosition.x, (float)mInterfacePosition.y});
@@ -304,12 +304,9 @@ fea::Color Renderer::glmToFeaColour(const glm::uvec3& col) const
 {
     fea::Color realColor;
 
-    std::cout << "before: " << col.r << " " << col.g << " " << col.b << "\n";
-    std::cout << "after: " << std::max(0, (int32_t)col.r * 64 - 1) << "\n";
     realColor.setRAsByte(std::max(0, (int32_t)col.r * 64 - 1));
     realColor.setGAsByte(std::max(0, (int32_t)col.g * 64 - 1));
     realColor.setBAsByte(std::max(0, (int32_t)col.b * 64 - 1));
-    std::cout << "after: " << (int32_t)realColor.rAsByte() << " " <<(int32_t) realColor.gAsByte() << " " << (int32_t)realColor.bAsByte() << "\n";
 
     return realColor;
 }
