@@ -158,67 +158,64 @@ void Scene::processWallMaskImage(const fea::Texture& wallMaskImage)
         removeColourPickup(mColourPickups.begin()->first);
     }
 
+    const fea::Color* imageArray = (fea::Color*)wallMaskImage.getPixelData();
     uint32_t imageSize = wallMaskImage.getSize().x * wallMaskImage.getSize().y;
 
     std::vector<bool> tempMask;
     tempMask.resize(imageSize, false);
 
     fea::Color startColour;
-
-    for(uint32_t x = 0; x < wallMaskImage.getSize().x; x++)
+    for(uint32_t i = 0; i < imageSize; i++)
     {
-        for(uint32_t y = 0; y < wallMaskImage.getSize().y; y++)
+        fea::Color colour = imageArray[i];
+        // first two must always be walls as these are the player colour pixels
+        if(i == 0)
         {
-            fea::Color colour = wallMaskImage.getPixel(x, y);
-            // first two must always be walls as these are the player colour pixels
-            if(x == 0 && y == 0)
+            startColour = colour;
+            tempMask.at(i) = true;
+        }
+        else if(i == 1)
+        {
+            mGoalColour = SFToGlmColour(colour);
+            mBus.send(GoalColourMessage(mGoalColour));
+            tempMask.at(i) = true;
+        }
+        // setting the other walls
+        else if(colour == fea::Color::Black)
+        {
+            tempMask.at(i) = true;
+        }
+        else if(colour != fea::Color::Transparent)
+        {
+            if(colour == fea::Color::White)
             {
-                startColour = colour;
-                tempMask.at(x + y * wallMaskImage.getSize().x) = true;
+                // player entity!
+                glm::uvec2 pos = glm::uvec2(i % wallMaskImage.getSize().x, i / wallMaskImage.getSize().x);
+                mPlayer->setAttribute("position", pos);
+                mBus.send(PlayerPositionMessage(pos));
+
+                glm::uvec3 col = SFToGlmColour(startColour);
+                mPlayer->setAttribute("colour", col);
+                mBus.send(PlayerColourMessage(col));
             }
-            else if(x == 0 && y == 0)
+            else
             {
-                mGoalColour = SFToGlmColour(colour);
-                mBus.send(GoalColourMessage(mGoalColour));
-                tempMask.at(x + y * wallMaskImage.getSize().x) = true;
-            }
-            // setting the other walls
-            else if(colour == fea::Color::Black)
-            {
-                tempMask.at(x + y * wallMaskImage.getSize().x) = true;
-            }
-            else if(colour != fea::Color::Transparent)
-            {
-                if(colour == fea::Color::White)
-                {
-                    // player entity!
-                    glm::uvec2 pos = glm::uvec2(x, y);
-                    mPlayer->setAttribute("position", pos);
-                    mBus.send(PlayerPositionMessage(pos));
+                // colour entities
+                fea::EntityPtr pickup = mFactory.instantiate("colour_pickup").lock();
 
-                    glm::uvec3 col = SFToGlmColour(startColour);
-                    mPlayer->setAttribute("colour", col);
-                    mBus.send(PlayerColourMessage(col));
-                }
-                else
-                {
-                    // colour entities
-                    fea::EntityPtr pickup = mFactory.instantiate("colour_pickup").lock();
+                glm::uvec2 pos = glm::uvec2(i % wallMaskImage.getSize().x, i / wallMaskImage.getSize().x);
+                pickup->setAttribute("position", pos);
 
-                    glm::uvec2 pos = glm::uvec2(x, y);
-                    pickup->setAttribute("position", pos);
+                glm::uvec3 col = SFToGlmColour(colour);
+                pickup->setAttribute("colour", col);
 
-                    glm::uvec3 col = SFToGlmColour(colour);
-                    pickup->setAttribute("colour", col);
+                bool add = (colour.a() == 255) ? true : false;
+                pickup->setAttribute("additive", add);
 
-                    bool add = (colour.a() == 255) ? true : false;
-                    pickup->setAttribute("additive", add);
+                size_t id = pickup->getId();
 
-                    size_t id = pickup->getId();
-
-                    mColourPickups.emplace(id, pickup);
-                    mBus.send(ColourPickupCreatedMessage(id, pos, col, add));
-                }
+                mColourPickups.emplace(id, pickup);
+                mBus.send(ColourPickupCreatedMessage(id, pos, col, add));
             }
         }
     }
