@@ -211,7 +211,7 @@ void Scene::processWallMaskImage(const fea::Texture& wallMaskImage)
                     glm::uvec3 col = SFToGlmColour(colour);
                     pickup->setAttribute("colour", col);
 
-                    bool add = (colour.aAsByte() == 255) ? true : false;
+                    bool add = (colour.a() == 255) ? true : false;
                     pickup->setAttribute("additive", add);
 
                     size_t id = pickup->getId();
@@ -228,5 +228,5 @@ void Scene::processWallMaskImage(const fea::Texture& wallMaskImage)
 
 glm::uvec3 Scene::SFToGlmColour(const fea::Color& colour)
 {
-    return glm::uvec3(colour.rAsByte() / 63, colour.gAsByte() / 63, colour.bAsByte() / 63);
+    return glm::uvec3(colour.r() / 63, colour.g() / 63, colour.b() / 63);
 }

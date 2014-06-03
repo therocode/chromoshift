@@ -27,9 +27,9 @@ void LevelLoader::load(const std::string& path)
             if(x == 0 || y == 0 || x == bgImage.getSize().x - 1 || y == bgImage.getSize().y)
             {
                 fea::Color colour = bgImage.getPixel(x, y);
-                accumulator.r += colour.rAsByte();
-                accumulator.g += colour.gAsByte();
-                accumulator.b += colour.bAsByte();
+                accumulator.r += colour.r();
+                accumulator.g += colour.g();
+                accumulator.b += colour.b();
                 accumulatorAmount++;
             }
         }
@@ -37,9 +37,9 @@ void LevelLoader::load(const std::string& path)
 
     fea::Color average;
 
-    average.setRAsByte(accumulator.r / accumulatorAmount);
-    average.setGAsByte(accumulator.g / accumulatorAmount);
-    average.setBAsByte(accumulator.b / accumulatorAmount);
+    average.setR(accumulator.r / accumulatorAmount);
+    average.setG(accumulator.g / accumulatorAmount);
+    average.setB(accumulator.b / accumulatorAmount);
 
     mBus.send(BGMessage(bgImage));
     mBus.send(MaskMessage(maskImage));

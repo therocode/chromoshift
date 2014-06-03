@@ -304,9 +304,9 @@ fea::Color Renderer::glmToFeaColour(const glm::uvec3& col) const
 {
     fea::Color realColor;
 
-    realColor.setRAsByte(std::max(0, (int32_t)col.r * 64 - 1));
-    realColor.setGAsByte(std::max(0, (int32_t)col.g * 64 - 1));
-    realColor.setBAsByte(std::max(0, (int32_t)col.b * 64 - 1));
+    realColor.setR(std::max(0, (int32_t)col.r * 64 - 1));
+    realColor.setG(std::max(0, (int32_t)col.g * 64 - 1));
+    realColor.setB(std::max(0, (int32_t)col.b * 64 - 1));
 
     return realColor;
 }
