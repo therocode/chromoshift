@@ -1,4 +1,5 @@
 #include "scene.hpp"
+#include "sounds.hpp"
 #include "direction.hpp"
 #include <fea/entity/glmtypeadder.hpp>
 #include <fea/entity/basictypeadder.hpp>
@@ -87,9 +88,8 @@ void Scene::handleMessage(const MoveMessage& mess)
         glm::uvec3 playerColour = mPlayer->getAttribute<glm::uvec3>("colour");
         glm::uvec3 pickupColour = pickup->getAttribute<glm::uvec3>("colour");
 
-        bool additive =  pickup->getAttribute<bool>("additive");
-
-            additive ?
+        bool additive = pickup->getAttribute<bool>("additive");
+        additive ?
             (playerColour = playerColour + pickupColour)
           : (playerColour = playerColour - pickupColour);
         
@@ -114,7 +114,7 @@ void Scene::handleMessage(const MoveMessage& mess)
 
         if(!mIsDead)
         {
-            mBus.send(SoundMessage( additive ? ADDER : SUBBER));
+            mBus.send(SoundMessage(additive ? Sound::ADDER : Sound::SUBBER));
         }
         else
         {

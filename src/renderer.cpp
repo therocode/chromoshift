@@ -30,7 +30,7 @@ Renderer::Renderer(fea::MessageBus& b, fea::Renderer2D& r) :
     mBus(b),
     mRenderer(r),
     mTileSize({30.0f, 30.0f}),
-    mInterfacePosition({0.0f, 500.0f}),
+    mInterfacePosition({-400.0f, 200.0f}),
     mAnimationTimer(0)
 {
     mBus.addSubscriber<BGMessage>(*this);
@@ -51,14 +51,14 @@ Renderer::Renderer(fea::MessageBus& b, fea::Renderer2D& r) :
     mInterfaceSprite = fea::Quad(mInterfaceTexture.getSize());
     mInterfaceSprite.setTexture(mInterfaceTexture);
     mInterfaceSprite.setScale({5.0f, 5.0f});
-    mInterfaceSprite.setPosition({(float)mInterfacePosition.x, (float)mInterfacePosition.y});
+    mInterfaceSprite.setPosition({mInterfacePosition.x, mInterfacePosition.y});
     mInterfaceSprite.setParallax({0.0f, 0.0f});
 
     mInterfaceOverlayTexture = makeTexture("textures/rgb-overlay.png");
     mInterfaceOverlaySprite = fea::Quad(mInterfaceOverlayTexture.getSize());
     mInterfaceOverlaySprite.setTexture(mInterfaceOverlayTexture);
     mInterfaceOverlaySprite.setScale({5.0f, 5.0f});
-    mInterfaceOverlaySprite.setPosition({(float)mInterfacePosition.x, (float)mInterfacePosition.y});
+    mInterfaceOverlaySprite.setPosition({mInterfacePosition.x, mInterfacePosition.y});
     mInterfaceOverlaySprite.setParallax({0.0f, 0.0f});
 }
 
@@ -90,7 +90,6 @@ void Renderer::handleMessage(const ResizeMessage& message)
 {
     glm::uvec2 screenSize;
     std::tie(screenSize) = message.mData;
-    //mInterfaceView.setSize(screenSize.x, screenSize.y);
 }
 
 void Renderer::handleMessage(const PlayerPositionMessage& message)

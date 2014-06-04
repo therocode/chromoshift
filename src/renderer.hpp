@@ -64,7 +64,7 @@ class Renderer :
         fea::Texture mInterfaceOverlayTexture;
         fea::Quad mInterfaceSprite;
         fea::Quad mInterfaceOverlaySprite;
-        glm::uvec2 mInterfacePosition;
+        glm::vec2 mInterfacePosition;
         glm::uvec3 mGoalColour;
         glm::uvec3 mPlayerColour;
         std::unordered_map<Colour, std::vector<fea::Quad>> mGoalColourMeter;
