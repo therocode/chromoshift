@@ -29,6 +29,11 @@ AudioPlayer::~AudioPlayer()
     mBus.removeSubscriber<SongPlayingMessage>(*this);
 }
 
+void AudioPlayer::update()
+{
+    mAudioPlayer.update();
+}
+
 void AudioPlayer::handleMessage(const SoundMessage& message)
 {
     Sound sound = std::get<0>(message.mData);

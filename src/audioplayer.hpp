@@ -9,6 +9,7 @@ class AudioPlayer :
     public:
         AudioPlayer(fea::MessageBus& bus);
         ~AudioPlayer();
+        void update();
         virtual void handleMessage(const SoundMessage& message) override;
         virtual void handleMessage(const SongPlayingMessage& message) override;
     private:
