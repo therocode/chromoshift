@@ -4,7 +4,7 @@ AudioPlayer::AudioPlayer(fea::MessageBus& bus) :
     mBus(bus)
 {
     mBus.addSubscriber<SoundMessage>(*this);
-    mBus.addSubscriber<SongPlayingMessage>(*this);
+    //mBus.addSubscriber<SongPlayingMessage>(*this);
 
     fea::AudioFile file;
 
@@ -26,7 +26,7 @@ AudioPlayer::AudioPlayer(fea::MessageBus& bus) :
 AudioPlayer::~AudioPlayer()
 {
     mBus.removeSubscriber<SoundMessage>(*this);
-    mBus.removeSubscriber<SongPlayingMessage>(*this);
+    //mBus.removeSubscriber<SongPlayingMessage>(*this);
 }
 
 void AudioPlayer::update()
@@ -52,6 +52,7 @@ void AudioPlayer::handleMessage(const SoundMessage& message)
     }
 }
 
+/*
 void AudioPlayer::handleMessage(const SongPlayingMessage& message)
 {
     bool playing = std::get<0>(message.mData);
@@ -67,3 +68,4 @@ void AudioPlayer::handleMessage(const SongPlayingMessage& message)
     else
         mAudioPlayer.stop(mSongHandle);
 }
+*/
