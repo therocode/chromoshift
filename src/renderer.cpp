@@ -48,14 +48,14 @@ Renderer::Renderer(fea::MessageBus& b, fea::Renderer2D& r) :
     mPickupTexture = makeTexture("textures/addsub.png");
 
     mInterfaceTexture = makeTexture("textures/rgb.png");
-    mInterfaceSprite = fea::Quad(mInterfaceTexture.getSize());
+    mInterfaceSprite = fea::Quad((glm::vec2)mInterfaceTexture.getSize());
     mInterfaceSprite.setTexture(mInterfaceTexture);
     mInterfaceSprite.setScale({5.0f, 5.0f});
     mInterfaceSprite.setPosition({mInterfacePosition.x, mInterfacePosition.y});
     mInterfaceSprite.setParallax({0.0f, 0.0f});
 
     mInterfaceOverlayTexture = makeTexture("textures/rgb-overlay.png");
-    mInterfaceOverlaySprite = fea::Quad(mInterfaceOverlayTexture.getSize());
+    mInterfaceOverlaySprite = fea::Quad((glm::vec2)mInterfaceOverlayTexture.getSize());
     mInterfaceOverlaySprite.setTexture(mInterfaceOverlayTexture);
     mInterfaceOverlaySprite.setScale({5.0f, 5.0f});
     mInterfaceOverlaySprite.setPosition({mInterfacePosition.x, mInterfacePosition.y});
@@ -80,7 +80,7 @@ void Renderer::handleMessage(const BGMessage& message)
     fea::Texture& image = std::get<0>(message.mData);
 
     mBgTexture = std::move(image);
-    mBackground = fea::Quad(mBgTexture.getSize());
+    mBackground = fea::Quad((glm::vec2)mBgTexture.getSize());
     mBackground.setTexture(mBgTexture);
     mBackground.setScale({mTileSize.x, mTileSize.y});
     mAnimationInfo = glm::ivec3();

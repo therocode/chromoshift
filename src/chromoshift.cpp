@@ -34,6 +34,7 @@ void ChromoShift::loop()
     mInputHandler.process();
     mStateMachine.run();
     mWindow.swapBuffers();
+    mAudioPlayer.update();
 
     if(mStateMachine.isFinished())
         quit();

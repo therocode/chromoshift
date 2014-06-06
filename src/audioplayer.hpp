@@ -3,15 +3,15 @@
 #include <fea/audio.hpp>
 
 class AudioPlayer :
-    public SoundMessageReceiver
-    //public SongPlayingMessageReceiver
+    public SoundMessageReceiver,
+    public SongPlayingMessageReceiver
 {
     public:
         AudioPlayer(fea::MessageBus& bus);
         ~AudioPlayer();
         void update();
-        virtual void handleMessage(const SoundMessage& message) override;
-        //virtual void handleMessage(const SongPlayingMessage& message) override;
+        void handleMessage(const SoundMessage& message) override;
+        void handleMessage(const SongPlayingMessage& message) override;
     private:
         fea::MessageBus& mBus;
         fea::AudioPlayer mAudioPlayer;
