@@ -15,10 +15,10 @@ Interface::~Interface()
 
 void Interface::handleMessage(const PlayerColourMessage& message)
 {
-    mPlayerColour = std::get<0>(message.mData);
+    mPlayerColour = message.colour;
 }
 
 void Interface::handleMessage(const GoalColourMessage& message)
 {
-    mGoalColour = std::get<0>(message.mData);
+    mGoalColour = message.colour;
 }

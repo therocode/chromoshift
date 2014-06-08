@@ -77,7 +77,7 @@ Renderer::~Renderer()
 
 void Renderer::handleMessage(const BGMessage& message)
 {
-    fea::Texture& image = std::get<0>(message.mData);
+    fea::Texture& image = message.bgImage;
 
     mBgTexture = std::move(image);
     mBackground = fea::Quad((glm::vec2)mBgTexture.getSize());
@@ -88,15 +88,13 @@ void Renderer::handleMessage(const BGMessage& message)
 
 void Renderer::handleMessage(const ResizeMessage& message)
 {
-    glm::uvec2 screenSize;
-    std::tie(screenSize) = message.mData;
+    //glm::uvec2 screenSize;
+    //std::tie(screenSize) = message.mData;
 }
 
 void Renderer::handleMessage(const PlayerPositionMessage& message)
 {
-    glm::uvec2 position;
-
-    std::tie(position) = message.mData;
+    glm::uvec2 position = message.position;
 
     mPlayer.setPosition({position.x * mTileSize.x, position.y * mTileSize.y});
     
@@ -105,7 +103,7 @@ void Renderer::handleMessage(const PlayerPositionMessage& message)
 
 void Renderer::handleMessage(const GoalColourMessage& message)
 {
-    mGoalColour = std::get<0>(message.mData);
+    mGoalColour = message.colour;
 
     mGoalColourMeter.clear();
     mInterfaceOverlaySprite.setColor(glmToFeaColour(mGoalColour));
@@ -140,7 +138,7 @@ void Renderer::handleMessage(const GoalColourMessage& message)
 
 void Renderer::handleMessage(const PlayerColourMessage& message)
 {
-    mPlayerColour = std::get<0>(message.mData);
+    mPlayerColour = message.colour;
 
     mPlayer.setColor(glmToFeaColour(mPlayerColour));
 
@@ -206,33 +204,27 @@ void Renderer::handleMessage(const PlayerColourMessage& message)
 
 void Renderer::handleMessage(const ColourPickupCreatedMessage& message)
 {
-    size_t id;
-    glm::uvec2 position;
-    glm::uvec3 colour;
-    bool additive;
-
-    std::tie(id, position, colour, additive) = message.mData;
+    size_t id = message.id;
+    glm::uvec2 position = message.position;
+    glm::uvec3 colour = message.colour;
+    bool additive = message.additive;
 
     mPickups.emplace(id, createPickup(position, colour, additive));
 }
 
 void Renderer::handleMessage(const ColourPickupRemovedMessage& message)
 {
-    size_t id;
-
-    std::tie(id) = message.mData;
-
-    mPickups.erase(id);
+    mPickups.erase(message.id);
 }
 
 void Renderer::handleMessage(const BackgroundColourMessage& message)
 {
-    mBackgroundColor = std::get<0>(message.mData);
+    mBackgroundColor = message.colour;
 }
 
 void Renderer::handleMessage(const PlayerDiedMessage& message)
 {
-    mAnimationInfo = std::get<0>(message.mData);
+    mAnimationInfo = message.reason;
 }
 
 void Renderer::render()

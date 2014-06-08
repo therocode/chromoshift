@@ -45,7 +45,7 @@ Scene::~Scene()
 void Scene::handleMessage(const MaskMessage& mess)
 {
     mIsDead = false;
-    processWallMaskImage(std::get<0>(mess.mData));
+    processWallMaskImage(mess.maskImage);
 }
 
 void Scene::handleMessage(const MoveMessage& mess)
@@ -53,8 +53,7 @@ void Scene::handleMessage(const MoveMessage& mess)
     if(mIsDead)
         return;
 
-    Direction dir;
-    std::tie(dir) = mess.mData;
+    Direction dir = mess.direction;
 
     glm::uvec2 newPos;
     glm::uvec2 oldPos = mPlayer->getAttribute<glm::uvec2>("position");
@@ -79,7 +78,7 @@ void Scene::handleMessage(const MoveMessage& mess)
     newPos = mWallMask.isWallAt(newPos) ? oldPos : newPos;
 
     mPlayer->setAttribute("position", newPos);
-    mBus.send(PlayerPositionMessage(newPos));
+    mBus.send(PlayerPositionMessage{newPos});
 
     // add or subtract from player colour
     fea::EntityPtr pickup = colourPickupAtPosition(newPos);
@@ -100,7 +99,7 @@ void Scene::handleMessage(const MoveMessage& mess)
                                 (playerColour.g > 5000 ? -1 : 0) + (playerColour.g > 4 &&  playerColour.g <= 5000 ? 1 : 0),
                                 (playerColour.b > 5000 ? -1 : 0) + (playerColour.b > 4 &&  playerColour.b <= 5000 ? 1 : 0));
 
-            mBus.send(PlayerDiedMessage(dieReason));
+            mBus.send(PlayerDiedMessage{dieReason});
             mIsDead = true;
         }
 
@@ -109,17 +108,17 @@ void Scene::handleMessage(const MoveMessage& mess)
         playerColour.b = std::min(4, std::max(0, (int32_t)playerColour.b));
 
         mPlayer->setAttribute("colour", playerColour);
-        mBus.send(PlayerColourMessage(playerColour));
+        mBus.send(PlayerColourMessage{playerColour});
         removeColourPickup(pickup->getId());
 
         if(!mIsDead)
         {
-            mBus.send(SoundMessage(additive ? Sound::ADDER : Sound::SUBBER));
+            mBus.send(SoundMessage{additive ? Sound::ADDER : Sound::SUBBER});
         }
         else
         {
-            mBus.send(SoundMessage(DIE));
-            mBus.send(SongPlayingMessage(false));
+            mBus.send(SoundMessage{DIE});
+            mBus.send(SongPlayingMessage{false});
         }
 
         //check for winning
@@ -132,7 +131,7 @@ void Scene::removeColourPickup(size_t id)
 {
     mColourPickups.erase(id);
     mManager.removeEntity(id);
-    mBus.send(ColourPickupRemovedMessage(id));
+    mBus.send(ColourPickupRemovedMessage{id});
 }
 
 fea::EntityPtr Scene::colourPickupAtPosition(const glm::uvec2& pos)
@@ -177,7 +176,7 @@ void Scene::processWallMaskImage(const fea::Texture& wallMaskImage)
         else if(i == 1)
         {
             mGoalColour = SFToGlmColour(colour);
-            mBus.send(GoalColourMessage(mGoalColour));
+            mBus.send(GoalColourMessage{mGoalColour});
             tempMask.at(i) = true;
         }
         // setting the other walls
@@ -192,11 +191,11 @@ void Scene::processWallMaskImage(const fea::Texture& wallMaskImage)
                 // player entity!
                 glm::uvec2 pos = glm::uvec2(i % wallMaskImage.getSize().x, i / wallMaskImage.getSize().x);
                 mPlayer->setAttribute("position", pos);
-                mBus.send(PlayerPositionMessage(pos));
+                mBus.send(PlayerPositionMessage{pos});
 
                 glm::uvec3 col = SFToGlmColour(startColour);
                 mPlayer->setAttribute("colour", col);
-                mBus.send(PlayerColourMessage(col));
+                mBus.send(PlayerColourMessage{col});
             }
             else
             {
@@ -215,7 +214,7 @@ void Scene::processWallMaskImage(const fea::Texture& wallMaskImage)
                 size_t id = pickup->getId();
 
                 mColourPickups.emplace(id, pickup);
-                mBus.send(ColourPickupCreatedMessage(id, pos, col, add));
+                mBus.send(ColourPickupCreatedMessage{id, pos, col, add});
             }
         }
     }

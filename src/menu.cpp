@@ -51,8 +51,8 @@ void MenuState::handleMessage(const AnyKeyPressedMessage& message)
 
 void MenuState::handleMessage(const ResizeMessage& message)
 {
-    glm::uvec2 screenSize;
-    std::tie(screenSize) = message.mData;
+    //glm::uvec2 screenSize;
+    //std::tie(screenSize) = message.mData;
     //sf::View newView(sf::FloatRect(0.0f, 0.0f, screenSize.x, screenSize.y));
     //mWindow.setView(newView);
 }

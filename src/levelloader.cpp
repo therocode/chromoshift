@@ -41,8 +41,8 @@ void LevelLoader::load(const std::string& path)
     average.setG(accumulator.g / accumulatorAmount);
     average.setB(accumulator.b / accumulatorAmount);
 
-    mBus.send(BGMessage(bgImage));
-    mBus.send(MaskMessage(maskImage));
+    mBus.send(BGMessage{bgImage});
+    mBus.send(MaskMessage{maskImage});
 
-    mBus.send(BackgroundColourMessage(average));
+    mBus.send(BackgroundColourMessage{average});
 }

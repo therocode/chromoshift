@@ -36,9 +36,7 @@ void AudioPlayer::update()
 
 void AudioPlayer::handleMessage(const SoundMessage& message)
 {
-    Sound sound = std::get<0>(message.mData);
-
-    switch(sound)
+    switch(message.sound)
     {
         case ADDER:
             mAdderHandle = mAudioPlayer.play(mAdder);
@@ -55,9 +53,7 @@ void AudioPlayer::handleMessage(const SoundMessage& message)
 
 void AudioPlayer::handleMessage(const SongPlayingMessage& message)
 {
-    bool playing = std::get<0>(message.mData);
-
-    if(playing)
+    if(message.playing)
     {
         mAudioPlayer.stop(mSongHandle);
         mAudioPlayer.stop(mAdderHandle);

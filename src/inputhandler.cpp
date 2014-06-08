@@ -19,21 +19,21 @@ void InputHandler::process()
             if(event.key.code == fea::Keyboard::Q)
                 mBus.send(QuitMessage());
             else if(event.key.code == fea::Keyboard::A)
-                mBus.send(MoveMessage(LEFT));
+                mBus.send(MoveMessage{LEFT});
                 //mDirectionsPressed[0] = true;
             else if(event.key.code == fea::Keyboard::D)
-                mBus.send(MoveMessage(RIGHT));
+                mBus.send(MoveMessage{RIGHT});
                 //mDirectionsPressed[1] = true;
             else if(event.key.code == fea::Keyboard::W)
-                mBus.send(MoveMessage(UP));
+                mBus.send(MoveMessage{UP});
                 //mDirectionsPressed[2] = true;
             else if(event.key.code == fea::Keyboard::S)
-                mBus.send(MoveMessage(DOWN));
+                mBus.send(MoveMessage{DOWN});
                 //mDirectionsPressed[3] = true;
             else if(event.key.code == fea::Keyboard::N)
-                mBus.send(LevelAdvanceMessage(1));
+                mBus.send(LevelAdvanceMessage{1});
             else if(event.key.code == fea::Keyboard::P)
-                mBus.send(LevelAdvanceMessage(-1));
+                mBus.send(LevelAdvanceMessage{-1});
             else if(event.key.code == fea::Keyboard::R)
                 mBus.send(LevelRestartMessage());
         }
@@ -54,7 +54,7 @@ void InputHandler::process()
         }
         else if(event.type == fea::Event::RESIZED)
         {
-            mBus.send(ResizeMessage({event.size.width, event.size.height}));
+            mBus.send(ResizeMessage{{event.size.width, event.size.height}});
         }
     }
 
